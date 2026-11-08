@@ -2,7 +2,7 @@ import { Pressable, Image, View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
 
-export default function RecipeCard({ item, featured }) {
+export default function RecipeCard({ item, featured, onPress }) {
   return (
     <Pressable
       style={({ pressed }) => [
@@ -10,7 +10,7 @@ export default function RecipeCard({ item, featured }) {
         featured && styles.cardFeatured,
         pressed && styles.cardPressed,
       ]}
-      onPress={() => {}}
+       onPress={onPress}
     >
       <Image
         source={{ uri: item.image }}

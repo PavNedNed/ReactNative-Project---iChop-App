@@ -1,26 +1,40 @@
 import { View, Text, StyleSheet, FlatList, ScrollView, Pressable } from "react-native";
 import RecipeCard from "../components/RecipeCard";
+import CategoryItemCard from "../components/CategoryItemCard";
 
 
 import { RECIPES } from "../data/data.js";
 
 export default function HomeScreen() {
-    // console.log(RECIPES)
+    const reversedRecipes = [...RECIPES].reverse();
+    const latestRecipes = reversedRecipes.slice(0, 3);
+    const allRecipes = RECIPES;
+
+
+    console.log(allRecipes)
+
+    const recipePressHandled = (recipe) => {
+        console.log("Recipe pressed:", recipe);
+    };
+    
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.sectionTitle}>Latest recipes:</Text>
 
             <FlatList
-                data={RECIPES}
+                data={latestRecipes}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <RecipeCard item={item} featured={true} />}
+                renderItem={({ item }) => <RecipeCard item={item} featured={true} onPress={() => recipePressHandled(item)} />}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.featuredList}
             />
 
-            <Text style={styles.sectionTitle}>Categories</Text>
-        </View>
+            <Text style={styles.sectionTitle}>All recipes</Text>
+            {allRecipes.map((item) => <CategoryItemCard key={item.id} onPress={() => recipePressHandled(item)}  {...item}/>)}
+
+
+        </ScrollView>
     );
 }
 const styles = StyleSheet.create({
