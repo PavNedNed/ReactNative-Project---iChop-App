@@ -8,18 +8,30 @@ export default function CategoryItemCard({
     onPress,
 }) {
     return (
-        <View style={[styles.container, styles.containerHorizontal]}>
-            <Image source={{ uri: image }} style={[styles.image, styles.imageHorizontal]} />
-            <View style={[styles.content, styles.contentHorizontal]}>
-                <Text style={styles.title}>{title}</Text>
-                <Text style={styles.subtitle}>{description}</Text>
-            </View>
-            <View style={styles.rightAction}>
-                <Pressable style={styles.addButton} onPress={onPress}>
-                    <Text style={styles.addButtonText}>View</Text>
-                </Pressable>
-            </View>
-        </View>
+            <Pressable
+                onPress={onPress}
+                style={({ pressed }) => [
+                    styles.container,
+                    styles.containerHorizontal,
+                    { marginLeft: 12, marginRight: 12 },
+                    {
+                        opacity: pressed ? 0.7 : 1,
+                        transform: [{ scale: pressed ? 0.98 : 1 }],
+                    },
+                ]}
+            >
+                <Image source={{ uri: image }} style={[styles.image, styles.imageHorizontal]} />
+                <View style={[styles.content, styles.contentHorizontal]}>
+                    <Text style={styles.title}>{title}</Text>
+                    <Text style={styles.subtitle}>{description}</Text>
+                </View>
+                <View style={styles.rightAction}>
+                    <View style={styles.addButton}>
+                        <Text style={styles.addButtonText}>Read More</Text>
+                    </View>
+
+                </View>
+            </Pressable>
     );
 }
 const styles = StyleSheet.create({
@@ -84,5 +96,8 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: '600',
         fontSize: 14,
+    },
+    cardPressed: {
+        opacity: 0.75,
     },
 });

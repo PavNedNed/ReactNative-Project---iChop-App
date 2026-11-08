@@ -18,8 +18,8 @@ export default function HomeScreen() {
 
     console.log(allRecipes)
 
-    const recipePressHandled = (recipe) => {
-        console.log("Recipe pressed:", recipe);
+    const recipePressHandled = (item) => {
+        navigation.navigate('Details', { item });
     };
     
     return (
