@@ -4,8 +4,13 @@ import CategoryItemCard from "../components/CategoryItemCard";
 
 
 import { RECIPES } from "../data/data.js";
+import { Link } from "@react-navigation/native";
+
+import { useNavigation } from "@react-navigation/native";
 
 export default function HomeScreen() {
+    const navigation = useNavigation();
+    
     const reversedRecipes = [...RECIPES].reverse();
     const latestRecipes = reversedRecipes.slice(0, 3);
     const allRecipes = RECIPES;
@@ -24,7 +29,9 @@ export default function HomeScreen() {
             <FlatList
                 data={latestRecipes}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <RecipeCard item={item} featured={true} onPress={() => recipePressHandled(item)} />}
+                renderItem={({ item }) => (
+                    <RecipeCard item={item} featured={true} onPress={() => navigation.navigate('Details', { item })} />
+                )}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.featuredList}
