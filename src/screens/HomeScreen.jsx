@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, ScrollView, Pressable } from "react-native";
+import { View, Text, StyleSheet, FlatList, ScrollView, Pressable, Image } from "react-native";
 import RecipeCard from "../components/RecipeCard";
 import CategoryItemCard from "../components/CategoryItemCard";
 
@@ -23,8 +23,17 @@ export default function HomeScreen() {
     
     return (
         <ScrollView style={styles.container}>
+            <Image
+                source={require('../../assets/home/home-image.jpg')}
+                style={{
+                    width: '100%',
+                    height: '400',
+                    }}
+                resizeMode="cover"
+                />
 
-                <Text style={styles.sectionTitle}>Latest recipes:</Text>
+            <View>
+                <Text style={styles.sectionTitle}>Check out the latest recipes:</Text>
 
                 <FlatList
                     data={latestRecipes}
@@ -36,9 +45,10 @@ export default function HomeScreen() {
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.featuredList}
                 />
+            </View>
 
 
-            <View style={styles.yellow}>
+            <View >
                 <Text style={styles.sectionTitle2}>All recipes</Text>
                 {allRecipes.map((item) => <CategoryItemCard key={item.id} onPress={() => recipePressHandled(item)}  {...item}/>)}
             </View>
@@ -108,7 +118,7 @@ const styles = StyleSheet.create({
         height: 24,
     },
     yellow: {
-        backgroundColor: '#F4BE38',
+        backgroundColor: '#fed822',
         paddingTop: 16,
         paddingBottom: 6,
     },

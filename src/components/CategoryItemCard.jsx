@@ -27,7 +27,7 @@ export default function CategoryItemCard({
                 </View>
                 <View style={styles.rightAction}>
                     <View style={styles.addButton}>
-                        <Text style={styles.addButtonText}>Read More</Text>
+                        <Text style={styles.addButtonText}>More</Text>
                     </View>
 
                 </View>
