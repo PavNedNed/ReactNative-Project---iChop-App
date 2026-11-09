@@ -23,21 +23,25 @@ export default function HomeScreen() {
     
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.sectionTitle}>Latest recipes:</Text>
 
-            <FlatList
-                data={latestRecipes}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <RecipeCard item={item} featured={true} onPress={() => navigation.navigate('Details', { item })} />
-                )}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.featuredList}
-            />
+                <Text style={styles.sectionTitle}>Latest recipes:</Text>
 
-            <Text style={styles.sectionTitle}>All recipes</Text>
-            {allRecipes.map((item) => <CategoryItemCard key={item.id} onPress={() => recipePressHandled(item)}  {...item}/>)}
+                <FlatList
+                    data={latestRecipes}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => (
+                        <RecipeCard item={item} featured={true} onPress={() => navigation.navigate('Details', { item })} />
+                    )}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.featuredList}
+                />
+
+
+            <View style={styles.yellow}>
+                <Text style={styles.sectionTitle2}>All recipes</Text>
+                {allRecipes.map((item) => <CategoryItemCard key={item.id} onPress={() => recipePressHandled(item)}  {...item}/>)}
+            </View>
 
 
         </ScrollView>
@@ -97,8 +101,23 @@ const styles = StyleSheet.create({
     },
     featuredList: {
         paddingRight: 16,
+        marginBottom: 16,
+        
     },
     bottomPadding: {
         height: 24,
+    },
+    yellow: {
+        backgroundColor: '#F4BE38',
+        paddingTop: 16,
+        paddingBottom: 6,
+    },
+    sectionTitle2: {
+        fontSize: 20,
+        fontWeight: '700',
+        color: '#333',
+        marginBottom: 12,
+        paddingLeft: 16,
+        paddingTop: 6,
     },
 });

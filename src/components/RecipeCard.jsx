@@ -44,10 +44,10 @@ export default function RecipeCard({ item, featured, onPress }) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: "#FFF",
     borderRadius: 8,
     // marginBottom: 16,
-    overflow: "hidden",
+    overflow: "hidden"
   },
   cardFeatured: {
     marginHorizontal: 16,
