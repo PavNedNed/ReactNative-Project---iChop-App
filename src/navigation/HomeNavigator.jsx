@@ -3,7 +3,7 @@ import { Pressable, Text, View } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import DetailsScreen from "../screens/DetailsScreen";
 
-export default function HomeNavigator({ navigation }) {
+export default function HomeNavigator({ navigation, route }) {
     const Stack = createStackNavigator();
 
     return (
@@ -23,7 +23,7 @@ export default function HomeNavigator({ navigation }) {
                                     
                                 }}
                                 onPress={() => {
-                                    alert("Logout clicked");
+                                    route.params.onLogout();
                                 }}
                             >
                                 <Text style={{ color: "black", fontWeight: "bold", textAlign: "center" }}>Logout ➡</Text>

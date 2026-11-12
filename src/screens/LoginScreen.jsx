@@ -12,7 +12,9 @@ import {
 // import { useUserContext } from '../contexts/user/UserContext';
 
 export default function LoginScreen({
-    navigation
+    navigation,
+    route
+
 }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -21,6 +23,8 @@ export default function LoginScreen({
 
     const loginHandler = () => {
         console.log('Login handler called with:', { email, password });
+
+        route.params.onLogin();
     }
 
     return (

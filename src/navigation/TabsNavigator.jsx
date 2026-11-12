@@ -3,8 +3,10 @@ import InfoScreen from "../screens/InfoScreen";
 import HomeNavigator from "./HomeNavigator";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function TabsNavigator() {
+export default function TabsNavigator({ route }) {
     const Tabs = createBottomTabNavigator();
+
+    const { onLogout } = route.params;
 
     return (
         <Tabs.Navigator>
@@ -14,8 +16,10 @@ export default function TabsNavigator() {
                 options={{
                     title: 'Home',
                     headerShown: false,
-                    tabBarIcon: ({ color, size }) => <Ionicons name="restaurant" color={color} size={size} />,
+                    tabBarIcon: ({ color, size }) => <Ionicons name="restaurant" color={color} size={size} 
+                    />,
                 }}
+                initialParams={{ onLogout }}
             />
 
             <Tabs.Screen
