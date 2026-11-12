@@ -11,7 +11,11 @@ export default function AuthNavigator({
     const Stack = createStackNavigator();
 
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            screenOptions={{
+                keyboardHandlingEnabled: true,
+            }}
+        >
             <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Login" }} initialParams={{ onLogin }} />
             <Stack.Screen name="Register" component={RegisterScreen} options={{ title: "Register" }} initialParams={{ onLogin }} />
         </Stack.Navigator>

@@ -15,7 +15,7 @@ export default function App() {
 
   return (
     <>
-      <StatusBar style="dark" backgroundColor="#FFFFFF" />
+      <StatusBar style="dark" backgroundColor="#FFFFFF" keyboardHandlingEnabled={true} />
       <NavigationContainer>
           {isAuthenticated
               ? <RootNavigator onLogout={handleLogout} />

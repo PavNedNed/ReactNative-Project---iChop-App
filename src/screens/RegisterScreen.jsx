@@ -3,7 +3,7 @@ import {
     View,
     Text,
     TextInput,
-    TouchableOpacity,
+    Pressable,
     StyleSheet,
     Alert,
     KeyboardAvoidingView,
@@ -32,19 +32,21 @@ export default function RegisterScreen({
     return (
         <KeyboardAvoidingView
             style={{ flex: 1 }}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            behavior="height"
+            enabled
             keyboardVerticalOffset={0}
         >
             <ScrollView
+                style={{ flex: 1 }}
                 contentContainerStyle={styles.container}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                    <Image
-                source={require('../../assets/home/auth-image.png')}
-                style={styles.heroImage}
-                resizeMode="cover"
-            />
+                <Image
+                    source={require('../../assets/home/auth-image.png')}
+                    style={styles.heroImage}
+                    resizeMode="cover"
+                />
 
                 <Text style={styles.title}>Create Account</Text>
 
@@ -81,16 +83,16 @@ export default function RegisterScreen({
                     secureTextEntry={true}
                 />
 
-                <TouchableOpacity style={styles.button} onPress={registerHandler}>
+                <Pressable style={styles.button} onPress={registerHandler}>
                     <Text style={styles.buttonText}>Register</Text>
-                </TouchableOpacity>
+                </Pressable>
 
-                <TouchableOpacity
+                <Pressable
                     style={styles.linkButton}
                     onPress={() => navigation.goBack()}
                 >
                     <Text style={styles.linkText}>Already have an account? Login</Text>
-                </TouchableOpacity>
+                </Pressable>
             </ScrollView>
         </KeyboardAvoidingView>
     );
@@ -101,9 +103,15 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'center',
         padding: 20,
-        paddingBottom: 100, // tova e vajno!
+        paddingBottom: 50,
         backgroundColor: '#fed822',
     },
+    // container: {
+    //     flexGrow: 1,
+    //     padding: 20,
+    //     paddingBottom: 40,
+    //     backgroundColor: '#fed822',
+    // },
     title: {
         fontSize: 32,
         fontWeight: 'bold',

@@ -3,7 +3,7 @@ import {
     View,
     Text,
     TextInput,
-    TouchableOpacity,
+    Pressable,
     StyleSheet,
     Image,
     KeyboardAvoidingView,
@@ -65,16 +65,16 @@ export default function LoginScreen({
                 secureTextEntry={true}
             />
 
-            <TouchableOpacity style={styles.button} onPress={loginHandler}>
+            <Pressable style={styles.button} onPress={loginHandler}>
                 <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
+            </Pressable>
 
-            <TouchableOpacity
+            <Pressable
                 style={styles.linkButton}
                 onPress={() => navigation.navigate('Register')}
             >
                 <Text style={styles.linkText}>Don't have an account? Register</Text>
-            </TouchableOpacity>
+            </Pressable>
             </ScrollView>
         </KeyboardAvoidingView>
     );
