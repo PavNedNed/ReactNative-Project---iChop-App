@@ -75,20 +75,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 20,
         paddingBottom: 100, // tova e vajno!
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#fed822',
     },
     title: {
         fontSize: 32,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 10,
-        color: '#333',
+        color: '#000',
     },
     subtitle: {
         fontSize: 16,
         textAlign: 'center',
         marginBottom: 30,
-        color: '#666',
+        color: '#000',
     },
     input: {
         backgroundColor: '#fff',
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
         borderColor: '#ddd',
     },
     button: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#000000',
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     linkText: {
-        color: '#007AFF',
+        color: '#000',
         fontSize: 16,
     },
 });
