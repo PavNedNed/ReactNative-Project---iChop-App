@@ -8,7 +8,8 @@ import {
     Alert,
     KeyboardAvoidingView,
     Platform,
-    ScrollView
+    ScrollView,
+    Image
 } from 'react-native';
 // import { useUserContext } from '../contexts/user/UserContext';
 
@@ -39,8 +40,13 @@ export default function RegisterScreen({
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
+                    <Image
+                source={require('../../assets/home/auth-image.png')}
+                style={styles.heroImage}
+                resizeMode="cover"
+            />
+
                 <Text style={styles.title}>Create Account</Text>
-                <Text style={styles.subtitle}>Join the Group Chat</Text>
 
                 <TextInput
                     style={styles.input}
@@ -121,7 +127,7 @@ const styles = StyleSheet.create({
         borderColor: '#ddd',
     },
     button: {
-        backgroundColor: '#000',
+        backgroundColor: '#691c0b',
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
@@ -137,7 +143,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     linkText: {
-        color: '#000',
+        color: '#691c0b',
         fontSize: 16,
+        fontWeight: 'bold',
     },
+    heroImage: {
+        width: '100%',
+        height: 200,
+        marginBottom: 0,
+    }
 });
