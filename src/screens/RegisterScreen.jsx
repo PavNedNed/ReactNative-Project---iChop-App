@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 // import { useUserContext } from '../contexts/user/UserContext';
 
+import PatternBackground from '../components/PatternBackground';
+
 export default function RegisterScreen({
     navigation,
 }) {
@@ -36,6 +38,9 @@ export default function RegisterScreen({
             enabled
             keyboardVerticalOffset={0}
         >
+            <PatternBackground>
+
+            
             <ScrollView
                 style={{ flex: 1 }}
                 contentContainerStyle={styles.container}
@@ -94,6 +99,7 @@ export default function RegisterScreen({
                     <Text style={styles.linkText}>Already have an account? Login</Text>
                 </Pressable>
             </ScrollView>
+            </PatternBackground>
         </KeyboardAvoidingView>
     );
 }
@@ -104,7 +110,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 20,
         paddingBottom: 50,
-        backgroundColor: '#fed822',
+        // backgroundColor: '#fed822',
     },
     // container: {
     //     flexGrow: 1,
@@ -131,8 +137,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 15,
         fontSize: 16,
-        borderWidth: 1,
-        borderColor: '#ddd',
+        borderWidth: 2,
+        borderColor: '#691c0b',
     },
     button: {
         backgroundColor: '#691c0b',

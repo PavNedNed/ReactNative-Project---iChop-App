@@ -10,6 +10,7 @@ import {
     Platform,
     ScrollView
 } from 'react-native';
+import PatternBackground from '../components/PatternBackground';
 // import { useUserContext } from '../contexts/user/UserContext';
 
 export default function LoginScreen({
@@ -34,6 +35,8 @@ export default function LoginScreen({
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={0}
         >
+            <PatternBackground>
+
             <ScrollView
                 contentContainerStyle={styles.container}
                 keyboardShouldPersistTaps="handled"
@@ -76,6 +79,8 @@ export default function LoginScreen({
                 <Text style={styles.linkText}>Don't have an account? Register</Text>
             </Pressable>
             </ScrollView>
+            </PatternBackground>
+
         </KeyboardAvoidingView>
     );
 }
@@ -86,7 +91,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 20,
         paddingBottom: 100, // tova e vajno!
-        backgroundColor: '#fed822',
+        // backgroundColor: '#fed822',
     },
     title: {
         fontSize: 32,
@@ -107,8 +112,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 15,
         fontSize: 16,
-        borderWidth: 1,
-        borderColor: '#ddd',
+        borderWidth: 2,
+        borderColor: '#691c0b',
+
     },
     button: {
         backgroundColor: '#691c0b',
