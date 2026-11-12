@@ -10,57 +10,69 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function HomeScreen() {
     const navigation = useNavigation();
-    
+
     const reversedRecipes = [...RECIPES].reverse();
     const latestRecipes = reversedRecipes.slice(0, 3);
-    const allRecipes = RECIPES;
-
-    // console.log(allRecipes)
 
     const recipePressHandled = (item) => {
         navigation.navigate('Details', { item });
     };
-    
-    return (
-        <ScrollView style={styles.container}>
+
+    const renderHeader = () => (
+        <View>
             <Image
                 source={require('../../assets/home/home-image.jpg')}
-                style={{
-                    width: '100%',
-                    height: '400',
-                    }}
+                style={styles.heroImage}
                 resizeMode="cover"
+            />
+
+            <Text style={styles.sectionTitle}>
+                Check out the latest recipes:
+            </Text>
+
+            <FlatList
+                data={latestRecipes}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <RecipeCard
+                        item={item}
+                        featured={true}
+                        onPress={() => recipePressHandled(item)}
+                    />
+                )}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.featuredList}
+            />
+
+            <Text style={styles.sectionTitle2}>All recipes</Text>
+        </View>
+    );
+    
+    return (
+        <FlatList
+            data={RECIPES}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+                <CategoryItemCard
+                    onPress={() => recipePressHandled(item)}
+                    {...item}
                 />
-
-            <View>
-                <Text style={styles.sectionTitle}>Check out the latest recipes:</Text>
-
-                <FlatList
-                    data={latestRecipes}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ item }) => (
-                        <RecipeCard item={item} featured={true} onPress={() => navigation.navigate('Details', { item })} />
-                    )}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.featuredList}
-                />
-            </View>
-
-
-            <View >
-                <Text style={styles.sectionTitle2}>All recipes</Text>
-                {allRecipes.map((item) => <CategoryItemCard key={item.id} onPress={() => recipePressHandled(item)}  {...item}/>)}
-            </View>
-
-
-        </ScrollView>
+            )}
+            ListHeaderComponent={renderHeader}
+            contentContainerStyle={styles.container}
+            showsVerticalScrollIndicator={false}
+        />
     );
 }
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
         backgroundColor: '#f8f8f8',
+        paddingBottom: 16,
+    },
+    heroImage: {
+        width: '100%',
+        height: 400,
     },
     header: {
         backgroundColor: '#007AFF',
@@ -112,7 +124,6 @@ const styles = StyleSheet.create({
     featuredList: {
         paddingRight: 16,
         marginBottom: 16,
-        
     },
     bottomPadding: {
         height: 24,
@@ -122,7 +133,7 @@ const styles = StyleSheet.create({
         paddingTop: 16,
         paddingBottom: 6,
     },
-    sectionTitle2: {
+   sectionTitle2: {
         fontSize: 20,
         fontWeight: '700',
         color: '#333',
