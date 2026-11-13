@@ -14,6 +14,7 @@ export default function TabsNavigator({ route }) {
                 options={{
                     title: 'Home',
                     headerShown: false,
+                    tabBarActiveTintColor: '#E85D5D',
                     tabBarIcon: ({ color, size }) => <Ionicons name="restaurant" color={color} size={size} 
                     />,
                 }}
@@ -23,6 +24,7 @@ export default function TabsNavigator({ route }) {
                 name="My Recipes"
                 component={InfoScreen}
                 options={{
+                    tabBarActiveTintColor: '#E85D5D',
                     tabBarIcon: ({ color, size }) => <Ionicons name="fast-food" color={color} size={size} />,
                 }}
             />
@@ -31,6 +33,7 @@ export default function TabsNavigator({ route }) {
                 name="Add Recipe"
                 component={InfoScreen}
                 options={{
+                    tabBarActiveTintColor: '#E85D5D',
                     tabBarIcon: ({ color, size }) => <Ionicons name="add-circle" color={color} size={size} />,
                 }}
             />

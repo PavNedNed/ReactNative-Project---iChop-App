@@ -23,7 +23,8 @@ export default function CategoryItemCard({
                 <Image source={{ uri: image }} style={[styles.image, styles.imageHorizontal]} />
                 <View style={[styles.content, styles.contentHorizontal]}>
                     <Text style={styles.title}>{title}</Text>
-                    <Text style={styles.subtitle}>{description}</Text>
+                    {/* <Text style={styles.subtitle}>{description}</Text> */}
+                    <Text style={styles.subtitle}>{description.length > 40 ? `${description.slice(0, 40)}...` : description}</Text>
                 </View>
                 <View style={styles.rightAction}>
                     <View style={styles.addButton}>

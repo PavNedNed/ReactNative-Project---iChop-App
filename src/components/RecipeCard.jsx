@@ -25,7 +25,8 @@ export default function RecipeCard({ item, featured, onPress }) {
           style={[styles.description, featured && styles.descriptionFeatured]}
           numberOfLines={featured ? 3 : 2}
         >
-          {item.description}
+          {/* {item.description} */}
+          {item.description.length > 40 ? `${item.description.slice(0, 40)}...` : item.description}
         </Text>
         <View style={styles.likesRow}>
           <Ionicons name="heart" size={featured ? 16 : 14} color="#E85D5D" />

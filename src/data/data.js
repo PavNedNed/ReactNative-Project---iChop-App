@@ -1,9 +1,3 @@
-export const CATEGORIES = [
-    { id: '1', name: 'Pasta' },
-    { id: '2', name: 'Breakfast' },
-    { id: '3', name: 'Seafood' },
-    { id: '4', name: 'Chicken' },
-];
 
 export const RECIPES = [
     {
@@ -13,6 +7,7 @@ export const RECIPES = [
         likes: 1284,
         image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&h=400&fit=crop',
         categoryId: '1',
+        userId: 1,
     },
     {
         id: '2',
@@ -21,6 +16,7 @@ export const RECIPES = [
         likes: 892,
         image: 'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=400&h=400&fit=crop',
         categoryId: '2',
+        userId: 2,
     },
     {
         id: '3',
@@ -29,6 +25,7 @@ export const RECIPES = [
         likes: 2103,
         image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&h=400&fit=crop',
         categoryId: '3',
+        userId: 3,
     },
     {
         id: '4',
@@ -37,6 +34,7 @@ export const RECIPES = [
         likes: 645,
         image: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=400&h=400&fit=crop',
         categoryId: '2',
+        userId: 1,
     },
     {
         id: '5',
@@ -45,5 +43,51 @@ export const RECIPES = [
         likes: 1576,
         image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=400&fit=crop',
         categoryId: '4',
+        userId: 2,
+    },
+    {
+        id: '6',
+        title: 'Garlic Butter Shrimp',
+        description: 'Juicy shrimp tossed in garlic butter with fresh parsley and lemon.',
+        likes: 934,
+        image: 'https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?w=400&h=400&fit=crop',
+        categoryId: '3',
+        userId: 3,
+    },
+    {
+        id: '7',
+        title: 'Classic Margherita Pizza',
+        description: 'Crispy crust topped with fresh mozzarella, tomato and basil.',
+        likes: 1876,
+        image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&h=400&fit=crop',
+        categoryId: '4',
+        userId: 1,
+    },
+    {
+        id: '8',
+        title: 'Chicken Caesar Salad',
+        description: 'Grilled chicken, crunchy romaine, parmesan and creamy Caesar dressing.',
+        likes: 1120,
+        image: 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=400&h=400&fit=crop',
+        categoryId: '1',
+        userId: 2,
+    },
+    {
+        id: '9',
+        title: 'Fluffy Blueberry Pancakes',
+        description: 'Soft golden pancakes loaded with blueberries and maple syrup.',
+        likes: 765,
+        image: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=400&h=400&fit=crop',
+        categoryId: '2',
+        userId: 3,
+    },
+    {
+        id: '10',
+        title: 'Creamy Mushroom Risotto',
+        description: 'Rich and comforting risotto with mushrooms, parmesan and herbs.',
+        likes: 1432,
+        image: 'https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=400&h=400&fit=crop',
+        categoryId: '1',
+        userId: 1,
     },
 ];
