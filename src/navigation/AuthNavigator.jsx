@@ -6,7 +6,6 @@ import RegisterScreen from "../screens/RegisterScreen";
 
 export default function AuthNavigator({
     navigation,
-    onLogin
 }) {
     const Stack = createStackNavigator();
 
@@ -16,8 +15,8 @@ export default function AuthNavigator({
                 keyboardHandlingEnabled: true,
             }}
         >
-            <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Login" }} initialParams={{ onLogin }} />
-            <Stack.Screen name="Register" component={RegisterScreen} options={{ title: "Register" }} initialParams={{ onLogin }} />
+            <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Login" }} />
+            <Stack.Screen name="Register" component={RegisterScreen} options={{ title: "Register" }} />
         </Stack.Navigator>
     );
 }

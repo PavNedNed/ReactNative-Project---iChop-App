@@ -6,8 +6,6 @@ import { Ionicons } from "@expo/vector-icons";
 export default function TabsNavigator({ route }) {
     const Tabs = createBottomTabNavigator();
 
-    const { onLogout } = route.params;
-
     return (
         <Tabs.Navigator>
             <Tabs.Screen
@@ -19,7 +17,6 @@ export default function TabsNavigator({ route }) {
                     tabBarIcon: ({ color, size }) => <Ionicons name="restaurant" color={color} size={size} 
                     />,
                 }}
-                initialParams={{ onLogout }}
             />
 
             <Tabs.Screen

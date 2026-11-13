@@ -25,8 +25,6 @@ export default function LoginScreen({
 
     const loginHandler = () => {
         console.log('Login handler called with:', { email, password });
-
-        route.params.onLogin();
     }
 
     return (

@@ -23,7 +23,7 @@ export default function HomeNavigator({ navigation, route }) {
                                     
                                 }}
                                 onPress={() => {
-                                    route.params.onLogout();
+                                    console.log("Logout pressed");
                                 }}
                             >
                                 <Text style={{ color: "black", fontWeight: "bold", textAlign: "center" }}>Logout ➡</Text>
