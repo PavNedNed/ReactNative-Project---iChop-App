@@ -43,6 +43,7 @@ export default function HomeScreen() {
     const latestRecipes = reversedRecipes.slice(0, 3);
 
     const recipePressHandled = (item) => {
+        console.log(item)
         navigation.navigate('Details', { item });
     };
 

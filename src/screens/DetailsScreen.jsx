@@ -1,6 +1,8 @@
 import { StyleSheet, View, ScrollView, Image, Text } from "react-native";
 import Button from "../components/Button";
 
+import { Host, HorizontalDivider } from "@expo/ui/jetpack-compose";
+
 
 export default function DetailsScreen({
     route,
@@ -8,12 +10,16 @@ export default function DetailsScreen({
 }) {
     const item = route.params.item;
 
+    const glutenFree = item.types?.glutenFree;
+    const dairyFree = item.types?.dairyFree;
+    const vegan = item.types?.vegan;
+
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                {item.image && (
+                {item.imageUrl && (
                     <Image
-                        source={{ uri: item.image }}
+                        source={{ uri: item.imageUrl }}
                         style={styles.image}
                         resizeMode="cover"
                     />
@@ -22,6 +28,17 @@ export default function DetailsScreen({
                 <View style={styles.content}>
                     <Text style={styles.name}>{item.title}</Text>
                     <Text style={styles.description}>{item.description}</Text>
+
+                    <Text style={styles.ingredients}>Ingredients: {item.ingredients}</Text>
+                    <Text style={styles.description}>{item.instructions}</Text>
+
+
+                {glutenFree && <Text style={styles.dietaryLabel}>✓ Gluten Free</Text>}
+                {dairyFree && <Text style={styles.dietaryLabel}>✓ Dairy Free</Text>}
+                {vegan && <Text style={styles.dietaryLabel}>✓ Vegan</Text>}
+                <Host><HorizontalDivider style={styles.divider} /></Host>
+                
+
                     <Text style={styles.likes}>Likes: {item.likes}</Text>
                 </View>
             </ScrollView>
@@ -53,6 +70,13 @@ export default function DetailsScreen({
 }
 
 const styles = StyleSheet.create({
+    ingredients: {
+        fontSize: 20,
+        color: '#666',
+        lineHeight: 22,
+        marginBottom: 8,
+        fontWeight: '600',
+    },
     container: {
         flex: 1,
         backgroundColor: '#fff',
@@ -87,7 +111,7 @@ const styles = StyleSheet.create({
     },
     likes: {
         fontSize: 16,
-        color: '#007AFF',
+        color: '#691c0b',
         fontWeight: '600',
     },
     divider: {
@@ -136,4 +160,15 @@ const styles = StyleSheet.create({
     viewDeleteButton: {
         flex: 1,
     },
+    dietaryLabel: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#1e8327',
+        marginBottom: 8,
+    },
+    divider: {
+
+        backgroundColor: '#e0e0e0',
+        marginVertical: 16,
+    }
 });

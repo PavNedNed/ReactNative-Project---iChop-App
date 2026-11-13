@@ -7,8 +7,14 @@ import { StyleSheet } from "react-native";
 
 import { useUserContext } from '../contexts/user/UserContext';
 
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
+
 export default function MyRecipesScreen() {
     const navigation = useNavigation();
+    const [recipes, setRecipes] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     
     const recipePressHandled = (item) => {
         navigation.navigate('Details', { item });
@@ -17,6 +23,30 @@ export default function MyRecipesScreen() {
     // Get the current user from the context
     const { user }  = useUserContext();
     const currentUserId = user.id;
+
+    // Fetch recipes from Supabase on mount
+        useEffect(() => {
+            async function fetchRecipes() {
+                try {
+                    setLoading(true);
+                    const { data, error } = await supabase.from('recipes').select('*');
+                    
+                    if (error) throw error;
+
+                    let recipes = data.filter(recipe => recipe.user_id === currentUserId);
+                    setRecipes(recipes || []);
+                } catch (err) {
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                }
+            }
+    
+            fetchRecipes();
+        }, []);
+
+    console.log("currentUserId:", currentUserId);
+    console.log(recipes);
 
     // Filter recipes by the current user
     const myRecipes = RECIPES.filter(recipe => recipe.userId === currentUserId);
@@ -28,7 +58,7 @@ export default function MyRecipesScreen() {
 
     return (
         <FlatList
-            data={myRecipes}
+            data={recipes}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
                 <CategoryItemCard
