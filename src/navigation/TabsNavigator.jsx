@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import InfoScreen from "../screens/InfoScreen";
 import HomeNavigator from "./HomeNavigator";
 import { Ionicons } from "@expo/vector-icons";
+import MyRecipesNavigator from "./MyRecipesNavigator";
 
 export default function TabsNavigator({ route }) {
     const Tabs = createBottomTabNavigator();
@@ -22,8 +23,10 @@ export default function TabsNavigator({ route }) {
 
             <Tabs.Screen
                 name="My Recipes"
-                component={InfoScreen}
+                component={MyRecipesNavigator}
                 options={{
+                    title: 'My Recipes',
+                    headerShown: false,
                     tabBarActiveTintColor: '#E85D5D',
                     tabBarIcon: ({ color, size }) => <Ionicons name="fast-food" color={color} size={size} />,
                 }}

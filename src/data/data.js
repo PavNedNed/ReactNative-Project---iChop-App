@@ -25,7 +25,7 @@ export const RECIPES = [
         likes: 2103,
         image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&h=400&fit=crop',
         categoryId: '3',
-        userId: 3,
+        userId: 2,
     },
     {
         id: '4',
@@ -52,7 +52,7 @@ export const RECIPES = [
         likes: 934,
         image: 'https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?w=400&h=400&fit=crop',
         categoryId: '3',
-        userId: 3,
+        userId: 1,
     },
     {
         id: '7',
