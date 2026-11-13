@@ -19,6 +19,7 @@ export default function UserProvider({
             id,
         };
 
+        console.log('Logging in with user data:', newState);
         await saveUser(newState);
     };
 

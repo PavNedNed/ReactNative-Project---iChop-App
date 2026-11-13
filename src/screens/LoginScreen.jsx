@@ -11,7 +11,8 @@ import {
     ScrollView
 } from 'react-native';
 import PatternBackground from '../components/PatternBackground';
-// import { useUserContext } from '../contexts/user/UserContext';
+
+import { useUserContext } from '../contexts/user/UserContext';
 
 export default function LoginScreen({
     navigation,
@@ -21,10 +22,23 @@ export default function LoginScreen({
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    // const { login }  = useUserContext();
+    const { login }  = useUserContext();
 
     const loginHandler = () => {
-        console.log('Login handler called with:', { email, password });
+        // console.log('Login handler called with:', { email, password });
+
+        // Dummy data for user IDs based on email
+        let id = 0;
+
+        if(email === "pavel@abv.bg") {
+            id = 1;
+        } else if(email === "mitko@abv.bg") {
+            id = 2;
+        } else {
+            id = 3;
+        }
+
+        login(email, password, id);
     }
 
     return (
