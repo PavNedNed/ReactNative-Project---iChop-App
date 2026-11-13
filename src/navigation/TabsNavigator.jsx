@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import InfoScreen from "../screens/InfoScreen";
+import AddRecipeScreen from "../screens/AddRecipeScreen";
 import HomeNavigator from "./HomeNavigator";
 import { Ionicons } from "@expo/vector-icons";
 import MyRecipesNavigator from "./MyRecipesNavigator";
@@ -34,7 +34,7 @@ export default function TabsNavigator({ route }) {
 
             <Tabs.Screen
                 name="Add Recipe"
-                component={InfoScreen}
+                component={AddRecipeScreen}
                 options={{
                     tabBarActiveTintColor: '#E85D5D',
                     tabBarIcon: ({ color, size }) => <Ionicons name="add-circle" color={color} size={size} />,
