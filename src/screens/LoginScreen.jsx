@@ -28,14 +28,14 @@ export default function LoginScreen({
         // console.log('Login handler called with:', { email, password });
 
         // Dummy data for user IDs based on email
-        let id = 0;
+        let id = "c4d1a6f8-3e72-49b5-8a0c-2f6d9e1b4a37";
 
         if(email === "pavel@abv.bg") {
-            id = 1;
+            id = "7f3a2c91-8d64-4b21-a5e7-1c9f0b6d2a43";
         } else if(email === "mitko@abv.bg") {
-            id = 2;
+            id = "2b8e5d74-1a93-46c0-9f52-6d3a8b1e7c25";
         } else {
-            id = 3;
+            id = "c4d1a6f8-3e72-49b5-8a0c-2f6d9e1b4a37";
         }
 
         login(email, password, id);

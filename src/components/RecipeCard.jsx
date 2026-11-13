@@ -13,7 +13,7 @@ export default function RecipeCard({ item, featured, onPress }) {
        onPress={onPress}
     >
       <Image
-        source={{ uri: item.image }}
+        source={{ uri: item.imageUrl }}
         style={[styles.thumbnail, featured && styles.thumbnailFeatured]}
       />
 

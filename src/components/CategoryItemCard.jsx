@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 export default function CategoryItemCard({
     title,
     description,
-    image,
+    imageUrl,
     likes,
     onPress,
 }) {
@@ -20,7 +20,7 @@ export default function CategoryItemCard({
                     },
                 ]}
             >
-                <Image source={{ uri: image }} style={[styles.image, styles.imageHorizontal]} />
+                <Image source={{ uri: imageUrl }} style={[styles.image, styles.imageHorizontal]} />
                 <View style={[styles.content, styles.contentHorizontal]}>
                     <Text style={styles.title}>{title}</Text>
                     {/* <Text style={styles.subtitle}>{description}</Text> */}

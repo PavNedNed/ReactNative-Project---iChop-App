@@ -6,12 +6,40 @@ import CategoryItemCard from "../components/CategoryItemCard";
 import { RECIPES } from "../data/data.js";
 import { Link } from "@react-navigation/native";
 
+import { useState, useEffect } from "react";
+
 import { useNavigation } from "@react-navigation/native";
+
+import { supabase } from "../lib/supabase";
 
 export default function HomeScreen() {
     const navigation = useNavigation();
 
-    const reversedRecipes = [...RECIPES].reverse();
+    // State for Supabase data, loading, and errors
+    const [recipes, setRecipes] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Fetch recipes from Supabase on mount
+    useEffect(() => {
+        async function fetchRecipes() {
+            try {
+                setLoading(true);
+                const { data, error } = await supabase.from('recipes').select('*');
+                
+                if (error) throw error;
+                setRecipes(data || []);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchRecipes();
+    }, []);
+
+    const reversedRecipes = [...recipes].reverse();
     const latestRecipes = reversedRecipes.slice(0, 3);
 
     const recipePressHandled = (item) => {
@@ -51,7 +79,7 @@ export default function HomeScreen() {
     
     return (
         <FlatList
-            data={RECIPES}
+            data={recipes}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
                 <CategoryItemCard
