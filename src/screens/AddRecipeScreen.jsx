@@ -15,7 +15,9 @@ import PatternBackgroundWhite from '../components/PatternBackgroundWhite';
 import { useUserContext } from '../contexts/user/UserContext';
 
 // import Slider from '@react-native-community/slider';
-import { Host, Slider } from '@expo/ui/jetpack-compose';
+import { Host, Slider, ToggleButton } from '@expo/ui/jetpack-compose';
+import { Checkbox } from 'expo-checkbox';
+
 
 export default function AddRecipeScreen({
     navigation,
@@ -27,6 +29,11 @@ export default function AddRecipeScreen({
     const [image, setImage] = useState('');
     const [instructions, setInstructions] = useState('');
     const [sliderValue, setSliderValue] = useState(5);
+
+
+    const [glutenFree, setGlutenFree] = useState(false);
+    const [dairyFree, setDairyFree] = useState(false);
+    const [vegan, setVegan] = useState(false);
 
     console.log(sliderValue)
 
@@ -71,6 +78,8 @@ export default function AddRecipeScreen({
                         placeholder="Description"
                         value={description}
                         onChangeText={setDescription}
+                        multiline
+                        numberOfLines={4}
                     />
 
                     <TextInput
@@ -78,24 +87,44 @@ export default function AddRecipeScreen({
                         placeholder="Instructions"
                         value={instructions}
                         onChangeText={setInstructions}
+                        multiline
+                        numberOfLines={4}
                     />
-                    {/* <View style={{ marginBottom: 30 }}>
-                        <View style={styles.header}>
-                            <Text style={styles.label}>Difficulty</Text>
-                            <Text style={styles.value}>{sliderValue}/10</Text>
-                        </View>
-                        <Slider
 
-                            minimumValue={1}
-                            maximumValue={10}
-                            step={1}
-                            value={sliderValue}
-                            onValueChange={setSliderValue}
-                            minimumTrackTintColor="#691c0b"
-                            maximumTrackTintColor="#000"
-                            thumbTintColor="#691c0b"
-                        />
-                    </View> */}
+                    <View style={styles.checkboxContainer}>
+                        <Text style={[styles.label, { paddingBottom: 10 }]}>More information</Text>
+                        <View style={styles.checkboxSection}>
+                            <Checkbox
+                                style={styles.checkbox}
+                                value={glutenFree}
+                                onValueChange={setGlutenFree}
+                                color={glutenFree ? '#E85D5D' : undefined}
+                            />
+                            <Text style={styles.paragraph}>Gluten Free</Text>
+                        </View>
+
+                        <View style={styles.checkboxSection}>
+                            <Checkbox
+                                style={styles.checkbox}
+                                value={dairyFree}
+                                onValueChange={setDairyFree}
+                                color={dairyFree ? '#E85D5D' : undefined}
+                            />
+                            <Text style={styles.paragraph}>Dairy Free</Text>
+                        </View>
+
+                        <View style={styles.checkboxSection}>
+                            <Checkbox
+                                style={styles.checkbox}
+                                value={vegan}
+                                onValueChange={setVegan}
+                                color={vegan ? '#E85D5D' : undefined}
+                            />
+                            <Text style={styles.paragraph}>Vegan</Text>
+                        </View>
+                    </View>
+
+
 
                     {/* Difficult slider START */}
                     <View style={styles.header}>
@@ -144,7 +173,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     label: {
-        fontSize: 16,
+        fontSize: 24,
         fontWeight: 'bold',
     },
     value: {
@@ -211,5 +240,26 @@ const styles = StyleSheet.create({
     slider: {
         width: '100%',
         height: 40,
+    },
+
+    checkbox: {
+        width: 40,
+        height: 40,
+        borderRadius: 5,
+        borderWidth: 2,
+        borderColor: '#E85D5D',
+    },
+
+    paragraph: {
+        fontSize: 20,
+        color: '#691C0B',
+        fontWeight: '500',
+    },
+
+    checkboxSection: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 15,
+        gap: 10,
     },
 });
