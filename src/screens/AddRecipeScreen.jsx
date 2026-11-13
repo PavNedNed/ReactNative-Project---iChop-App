@@ -12,17 +12,13 @@ import {
 } from 'react-native';
 import PatternBackgroundWhite from '../components/PatternBackgroundWhite';
 
-import { useUserContext } from '../contexts/user/UserContext';
-
-// import Slider from '@react-native-community/slider';
-import { Host, Slider, ToggleButton } from '@expo/ui/jetpack-compose';
+import { Host, Slider } from '@expo/ui/jetpack-compose';
 import { Checkbox } from 'expo-checkbox';
 
 
 export default function AddRecipeScreen({
     navigation,
     route
-
 }) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -35,7 +31,7 @@ export default function AddRecipeScreen({
     const [dairyFree, setDairyFree] = useState(false);
     const [vegan, setVegan] = useState(false);
 
-    console.log(sliderValue)
+    // console.log(sliderValue)
 
     const addRecipeHandler = () => {
         // Logic to add a new recipe
@@ -246,7 +242,7 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 5,
-        borderWidth: 2,
+        borderWidth: 4,
         borderColor: '#E85D5D',
     },
 
