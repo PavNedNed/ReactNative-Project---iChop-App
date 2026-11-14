@@ -1,51 +1,89 @@
-import { View, Text, StyleSheet, FlatList, ScrollView, Pressable, Image } from "react-native";
-import RecipeCard from "../components/RecipeCard";
-import CategoryItemCard from "../components/CategoryItemCard";
-
-
-import { RECIPES } from "../data/data.js";
-import { Link } from "@react-navigation/native";
 
 import { useState, useEffect } from "react";
+import {
+    View,
+    Text,
+    StyleSheet,
+    FlatList,
+    Image,
+    ActivityIndicator,
+    Pressable
+} from "react-native";
 
+import RecipeCard from "../components/RecipeCard";
+import CategoryItemCard from "../components/CategoryItemCard";
 import { useNavigation } from "@react-navigation/native";
-
 import { supabase } from "../lib/supabase";
 
 export default function HomeScreen() {
     const navigation = useNavigation();
 
-    // State for Supabase data, loading, and errors
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Fetch recipes from Supabase on mount
-    useEffect(() => {
-        async function fetchRecipes() {
-            try {
-                setLoading(true);
-                const { data, error } = await supabase.from('recipes').select('*');
-                
-                if (error) throw error;
-                setRecipes(data || []);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        }
+    async function fetchRecipes() {
+        try {
+            setLoading(true);
+            setError(null);
 
+            const { data, error } = await supabase
+                .from('recipes')
+                .select('*');
+
+            if (error) throw error;
+
+            setRecipes(data || []);
+
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
         fetchRecipes();
     }, []);
 
-    const reversedRecipes = [...recipes].reverse();
-    const latestRecipes = reversedRecipes.slice(0, 3);
-
     const recipePressHandled = (item) => {
-        console.log(item)
         navigation.navigate('Details', { item });
     };
+
+    // Loading state
+    if (loading) {
+        return (
+            <View style={styles.centerContainer}>
+                <ActivityIndicator size="large" color="#fed822" />
+                <Text style={styles.message}>Loading recipes...</Text>
+            </View>
+        );
+    }
+
+    // Error state
+    if (error) {
+        return (
+            <View style={styles.centerContainer}>
+                <Text style={styles.errorText}>
+                    Something went wrong!
+                </Text>
+
+                <Text style={styles.message}>
+                    {error}
+                </Text>
+
+                <Pressable
+                    style={styles.retryButton}
+                    onPress={fetchRecipes}
+                >
+                    <Text style={styles.retryText}>Try Again</Text>
+                </Pressable>
+            </View>
+        );
+    }
+
+    const reversedRecipes = [...recipes].reverse();
+    const latestRecipes = reversedRecipes.slice(0, 3);
 
     const renderHeader = () => (
         <View>
@@ -77,7 +115,7 @@ export default function HomeScreen() {
             <Text style={styles.sectionTitle2}>All recipes</Text>
         </View>
     );
-    
+
     return (
         <FlatList
             data={recipes}
@@ -94,6 +132,7 @@ export default function HomeScreen() {
         />
     );
 }
+
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#f8f8f8',
@@ -162,12 +201,48 @@ const styles = StyleSheet.create({
         paddingTop: 16,
         paddingBottom: 6,
     },
-   sectionTitle2: {
+    sectionTitle2: {
         fontSize: 20,
         fontWeight: '700',
         color: '#333',
         marginBottom: 12,
         paddingLeft: 16,
         paddingTop: 6,
+    },
+
+    centerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f8f8f8',
+        padding: 24,
+    },
+
+    message: {
+        fontSize: 16,
+        color: '#666',
+        marginTop: 12,
+        textAlign: 'center',
+    },
+
+    errorText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#d32f2f',
+        marginBottom: 8,
+    },
+
+    retryButton: {
+        backgroundColor: '#fed822',
+        paddingVertical: 12,
+        paddingHorizontal: 28,
+        borderRadius: 8,
+        marginTop: 20,
+    },
+
+    retryText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
     },
 });

@@ -1,9 +1,15 @@
-import { View, Text, FlatList } from "react-native";
+
+import {
+    View,
+    Text,
+    FlatList,
+    StyleSheet,
+    ActivityIndicator,
+    Pressable
+} from "react-native";
+
 import { useNavigation } from "@react-navigation/native";
 import CategoryItemCard from "../components/CategoryItemCard";
-
-import { RECIPES } from "../data/data.js";
-import { StyleSheet } from "react-native";
 
 import { useUserContext } from '../contexts/user/UserContext';
 
@@ -12,50 +18,80 @@ import { supabase } from "../lib/supabase";
 
 export default function MyRecipesScreen() {
     const navigation = useNavigation();
+
     const [recipes, setRecipes] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
+
+    // Get the current user from context
+    const { user } = useUserContext();
+    const currentUserId = user?.id;
+
+    // Fetch recipes from Supabase
+    async function fetchRecipes() {
+        try {
+            setLoading(true);
+            setError(null);
+
+            const { data, error } = await supabase
+                .from('recipes')
+                .select('*')
+                .eq('user_id', currentUserId);
+
+            if (error) throw error;
+
+            setRecipes(data || []);
+
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        if (currentUserId) {
+            fetchRecipes();
+        }
+    }, [currentUserId]);
+
     const recipePressHandled = (item) => {
         navigation.navigate('Details', { item });
     };
 
-    // Get the current user from the context
-    const { user }  = useUserContext();
-    const currentUserId = user.id;
+    // Loading state
+    if (loading) {
+        return (
+            <View style={styles.centerContainer}>
+                <ActivityIndicator size="large" color="#fed822" />
+                <Text style={styles.message}>Loading your recipes...</Text>
+            </View>
+        );
+    }
 
-    // Fetch recipes from Supabase on mount
-        useEffect(() => {
-            async function fetchRecipes() {
-                try {
-                    setLoading(true);
-                    const { data, error } = await supabase.from('recipes').select('*');
-                    
-                    if (error) throw error;
+    // Error state
+    if (error) {
+        return (
+            <View style={styles.centerContainer}>
+                <Text style={styles.errorText}>
+                    Something went wrong!
+                </Text>
 
-                    let recipes = data.filter(recipe => recipe.user_id === currentUserId);
-                    setRecipes(recipes || []);
-                } catch (err) {
-                    setError(err.message);
-                } finally {
-                    setLoading(false);
-                }
-            }
-    
-            fetchRecipes();
-        }, []);
+                <Text style={styles.message}>
+                    {error}
+                </Text>
 
-    console.log("currentUserId:", currentUserId);
-    console.log(recipes);
+                <Pressable
+                    style={styles.retryButton}
+                    onPress={fetchRecipes}
+                >
+                    <Text style={styles.retryText}>Try Again</Text>
+                </Pressable>
+            </View>
+        );
+    }
 
-    // Filter recipes by the current user
-    const myRecipes = RECIPES.filter(recipe => recipe.userId === currentUserId);
-    console.log(myRecipes);
-
-
-
-    // console.log(RECIPES);
-
+    // Success state
     return (
         <FlatList
             data={recipes}
@@ -66,6 +102,11 @@ export default function MyRecipesScreen() {
                     {...item}
                 />
             )}
+            ListEmptyComponent={
+                <Text style={styles.emptyText}>
+                    You haven't added any recipes yet.
+                </Text>
+            }
             contentContainerStyle={styles.container}
             showsVerticalScrollIndicator={false}
         />
@@ -76,5 +117,49 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#f8f8f8',
         paddingBottom: 16,
+        flexGrow: 1,
+    },
+
+    centerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f8f8f8',
+        padding: 24,
+    },
+
+    message: {
+        fontSize: 16,
+        color: '#666',
+        marginTop: 12,
+        textAlign: 'center',
+    },
+
+    errorText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#d32f2f',
+        marginBottom: 8,
+    },
+
+    retryButton: {
+        backgroundColor: '#fed822',
+        paddingVertical: 12,
+        paddingHorizontal: 28,
+        borderRadius: 8,
+        marginTop: 20,
+    },
+
+    retryText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+
+    emptyText: {
+        fontSize: 16,
+        color: '#666',
+        textAlign: 'center',
+        marginTop: 40,
     },
 });

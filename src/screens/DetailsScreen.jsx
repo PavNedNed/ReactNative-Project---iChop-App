@@ -29,7 +29,7 @@ export default function DetailsScreen({
                     <Text style={styles.name}>{item.title}</Text>
                     <Text style={styles.description}>{item.description}</Text>
 
-                    <Text style={styles.ingredients}>Ingredients: {item.ingredients}</Text>
+                    <Text style={styles.ingredients}>Instructions: {item.ingredients}</Text>
                     <Text style={styles.description}>{item.instructions}</Text>
 
 
