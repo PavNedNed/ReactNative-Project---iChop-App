@@ -5,7 +5,8 @@ import {
     FlatList,
     StyleSheet,
     ActivityIndicator,
-    Pressable
+    Pressable,
+    RefreshControl
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
@@ -21,6 +22,7 @@ export default function MyRecipesScreen() {
 
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState(null);
 
     // Get the current user from context
@@ -28,9 +30,14 @@ export default function MyRecipesScreen() {
     const currentUserId = user?.id;
 
     // Fetch recipes from Supabase
-    async function fetchRecipes() {
+    async function fetchRecipes(isRefreshing = false) {
         try {
-            setLoading(true);
+            if (isRefreshing) {
+                setRefreshing(true);
+            } else {
+                setLoading(true);
+            }
+
             setError(null);
 
             const { data, error } = await supabase
@@ -46,6 +53,7 @@ export default function MyRecipesScreen() {
             setError(err.message);
         } finally {
             setLoading(false);
+            setRefreshing(false);
         }
     }
 
@@ -109,6 +117,14 @@ export default function MyRecipesScreen() {
             }
             contentContainerStyle={styles.container}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => fetchRecipes(true)}
+                    colors={['#d32f2f']}
+                    tintColor="#d32f2f"
+                />
+            }
         />
     );
 }

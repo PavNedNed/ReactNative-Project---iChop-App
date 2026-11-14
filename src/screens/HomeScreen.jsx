@@ -7,7 +7,8 @@ import {
     FlatList,
     Image,
     ActivityIndicator,
-    Pressable
+    Pressable,
+    RefreshControl
 } from "react-native";
 
 import RecipeCard from "../components/RecipeCard";
@@ -20,16 +21,23 @@ export default function HomeScreen() {
 
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState(null);
 
-    async function fetchRecipes() {
+    async function fetchRecipes(isRefreshing = false) {
         try {
-            setLoading(true);
+            if (isRefreshing) {
+                setRefreshing(true);
+            } else {
+                setLoading(true);
+            }
+
             setError(null);
 
             const { data, error } = await supabase
                 .from('recipes')
-                .select('*');
+                .select('*')
+                .order('created_at', { ascending: false });
 
             if (error) throw error;
 
@@ -39,6 +47,7 @@ export default function HomeScreen() {
             setError(err.message);
         } finally {
             setLoading(false);
+            setRefreshing(false);
         }
     }
 
@@ -129,6 +138,14 @@ export default function HomeScreen() {
             ListHeaderComponent={renderHeader}
             contentContainerStyle={styles.container}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => fetchRecipes(true)}
+                    colors={['#d32f2f']}
+                    tintColor="#d32f2f"
+                />
+            }
         />
     );
 }
@@ -209,7 +226,6 @@ const styles = StyleSheet.create({
         paddingLeft: 16,
         paddingTop: 6,
     },
-
     centerContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -217,21 +233,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#f8f8f8',
         padding: 24,
     },
-
     message: {
         fontSize: 16,
         color: '#666',
         marginTop: 12,
         textAlign: 'center',
     },
-
     errorText: {
         fontSize: 20,
         fontWeight: 'bold',
         color: '#d32f2f',
         marginBottom: 8,
     },
-
     retryButton: {
         backgroundColor: '#fed822',
         paddingVertical: 12,
@@ -239,7 +252,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginTop: 20,
     },
-
     retryText: {
         fontSize: 16,
         fontWeight: 'bold',
