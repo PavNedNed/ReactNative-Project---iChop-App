@@ -28,6 +28,7 @@ export default function TabsNavigator({ route }) {
                     title: 'My Recipes',
                     headerShown: false,
                     tabBarActiveTintColor: '#E85D5D',
+                    popToTopOnBlur: true,
                     tabBarIcon: ({ color, size }) => <Ionicons name="fast-food" color={color} size={size} />,
                 }}
             />
