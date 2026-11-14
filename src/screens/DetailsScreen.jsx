@@ -36,7 +36,29 @@ export default function DetailsScreen({
                 {glutenFree && <Text style={styles.dietaryLabel}>✓ Gluten Free</Text>}
                 {dairyFree && <Text style={styles.dietaryLabel}>✓ Dairy Free</Text>}
                 {vegan && <Text style={styles.dietaryLabel}>✓ Vegan</Text>}
-                <Host><HorizontalDivider style={styles.divider} /></Host>
+
+
+                <Host>
+                    <HorizontalDivider
+                        thickness={5}
+                        color="#e9e7e7"
+                    />
+                </Host>
+                <View style={styles.levelSection}>
+                    <Text style={styles.levelTextLabel}>
+                        Difficulty of preparation:
+                    </Text>
+                    <Text style={styles.levelNumberLabel}>
+                        {item.level}/10
+                    </Text>
+                </View>
+                <Host>
+                    <HorizontalDivider
+                        thickness={5}
+                        color="#ccc8c8"
+                        paddingTop={16}
+                    />
+                </Host>
                 
 
                     <Text style={styles.likes}>Likes: {item.likes}</Text>
@@ -114,11 +136,6 @@ const styles = StyleSheet.create({
         color: '#691c0b',
         fontWeight: '600',
     },
-    divider: {
-        height: 1,
-        backgroundColor: '#e0e0e0',
-        marginVertical: 16,
-    },
     qtySection: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -166,9 +183,21 @@ const styles = StyleSheet.create({
         color: '#1e8327',
         marginBottom: 8,
     },
-    divider: {
+    levelTextLabel: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#6b6b6b',
+    },
+    levelNumberLabel: {
+        fontSize: 40,
+        fontWeight: 'bold',
+        color: '#FF3B30',
+        paddingLeft: 8,
+    },
+    levelSection: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
 
-        backgroundColor: '#e0e0e0',
-        marginVertical: 16,
     }
 });
