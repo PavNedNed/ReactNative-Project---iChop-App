@@ -22,7 +22,7 @@ export default function TabsNavigator({ route }) {
             />
 
             <Tabs.Screen
-                name="My Recipes"
+                name="MyRecipes"
                 component={MyRecipesNavigator}
                 options={{
                     title: 'My Recipes',

@@ -12,6 +12,8 @@ import {
     ActivityIndicator,
     Alert
 } from 'react-native';
+
+import { useUserContext } from '../contexts/user/UserContext';
 import PatternBackgroundWhite from '../components/PatternBackgroundWhite';
 
 import { Host, Slider } from '@expo/ui/jetpack-compose';
@@ -36,6 +38,11 @@ export default function AddRecipeScreen({
     const [vegan, setVegan] = useState(false);
 
     // console.log(sliderValue)
+
+    // user id temporary for test only
+    const { user } = useUserContext();
+    const currentUserId = user?.id;
+
     const {
         create,
         loading,
@@ -56,15 +63,34 @@ export default function AddRecipeScreen({
                 "dairyFree": dairyFree,
                 "vegan": vegan
             },
+            "user_id": currentUserId
         };
         console.log('Adding recipe with:', newRecipe);
 
         const result = await create(newRecipe);
 
         if (result) {
-            Alert.alert('Success', 'Recipe created!');
+            resetForm();
+
+            // important: navigate to the MyRecipes tab after adding a recipe
+            navigation.navigate('MyRecipes', {
+                screen: 'My Recipes'
+            });
         }
     }
+
+    const resetForm = () => {
+        setTitle('');
+        setDescription('');
+        setImage('');
+        setInstructions('');
+
+        setSliderValue(5);
+
+        setGlutenFree(false);
+        setDairyFree(false);
+        setVegan(false);
+    };
 
     return (
         <KeyboardAvoidingView

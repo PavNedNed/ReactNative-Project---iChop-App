@@ -14,7 +14,9 @@ import CategoryItemCard from "../components/CategoryItemCard";
 
 import { useUserContext } from '../contexts/user/UserContext';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+
 import { supabase } from "../lib/supabase";
 
 export default function MyRecipesScreen() {
@@ -43,7 +45,8 @@ export default function MyRecipesScreen() {
             const { data, error } = await supabase
                 .from('recipes')
                 .select('*')
-                .eq('user_id', currentUserId);
+                .eq('user_id', currentUserId)
+                .order('created_at', { ascending: false });
 
             if (error) throw error;
 
@@ -57,11 +60,13 @@ export default function MyRecipesScreen() {
         }
     }
 
-    useEffect(() => {
-        if (currentUserId) {
-            fetchRecipes();
-        }
-    }, [currentUserId]);
+    useFocusEffect(
+        useCallback(() => {
+            if (currentUserId) {
+                fetchRecipes();
+            }
+        }, [currentUserId])
+    );
 
     const recipePressHandled = (item) => {
         navigation.navigate('Details', { item });
