@@ -1,8 +1,12 @@
 import { Pressable, Image, View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 
+const screenWidth = Dimensions.get('window').width;
 export default function RecipeCard({ item, featured, onPress }) {
+
+
+
   return (
     <Pressable
       style={({ pressed }) => [
@@ -48,7 +52,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     borderRadius: 8,
     // marginBottom: 16,
-    overflow: "hidden"
+    overflow: "hidden",
+    width: screenWidth - 40,
   },
   cardFeatured: {
     marginHorizontal: 16,

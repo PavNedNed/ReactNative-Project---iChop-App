@@ -8,12 +8,16 @@ import {
     Image,
     KeyboardAvoidingView,
     Platform,
-    ScrollView
+    ScrollView,
+    ActivityIndicator,
+    Alert
 } from 'react-native';
 import PatternBackgroundWhite from '../components/PatternBackgroundWhite';
 
 import { Host, Slider } from '@expo/ui/jetpack-compose';
 import { Checkbox } from 'expo-checkbox';
+
+import useSupabaseTable from '../hooks/useSupabaseTable';
 
 
 export default function AddRecipeScreen({
@@ -32,10 +36,34 @@ export default function AddRecipeScreen({
     const [vegan, setVegan] = useState(false);
 
     // console.log(sliderValue)
+    const {
+        create,
+        loading,
+        error
+    } = useSupabaseTable('recipes', {
+        immediate: false
+    });
 
-    const addRecipeHandler = () => {
-        // Logic to add a new recipe
-        console.log('Adding recipe with:', { title, description });
+    const addRecipeHandler = async () => {
+        const newRecipe = {
+            "title": title.trim(),
+            "description": description.trim(),
+            "imageUrl": image.trim(),
+            "instructions": instructions.trim(),
+            "level": Number(sliderValue),
+            "types": {
+                "glutenFree": glutenFree,
+                "dairyFree": dairyFree,
+                "vegan": vegan
+            },
+        };
+        console.log('Adding recipe with:', newRecipe);
+
+        const result = await create(newRecipe);
+
+        if (result) {
+            Alert.alert('Success', 'Recipe created!');
+        }
     }
 
     return (
@@ -150,8 +178,24 @@ export default function AddRecipeScreen({
 
 
 
-                    <Pressable style={styles.button} onPress={addRecipeHandler}>
-                        <Text style={styles.buttonText}>Add Recipe</Text>
+
+                    {loading && (
+                        <ActivityIndicator size="large" />
+                    )}
+
+                    {/* // vij posle za toast */}
+                    {error && (
+                        <Text style={{ color: 'red' }}>
+                            {error}
+                        </Text>
+                    )}
+
+                    <Pressable
+                        style={styles.button}
+                        onPress={addRecipeHandler}
+                        disabled={loading}
+                    >
+                        <Text style={styles.buttonText}>{loading ? 'Creating...' : 'Add Recipe'}</Text>
                     </Pressable>
 
                 </ScrollView>

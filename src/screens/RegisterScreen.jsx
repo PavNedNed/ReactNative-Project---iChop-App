@@ -155,6 +155,8 @@ const styles = StyleSheet.create({
     linkButton: {
         marginTop: 20,
         alignItems: 'center',
+        padding: 10,
+        backgroundColor: 'transparent',
     },
     linkText: {
         color: '#691c0b',
