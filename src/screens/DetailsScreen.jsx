@@ -17,6 +17,7 @@ export default function DetailsScreen({
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
+
                 {item.imageUrl && (
                     <Image
                         source={{ uri: item.imageUrl }}

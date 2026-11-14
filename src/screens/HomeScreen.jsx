@@ -16,6 +16,8 @@ import CategoryItemCard from "../components/CategoryItemCard";
 import { useNavigation } from "@react-navigation/native";
 import { supabase } from "../lib/supabase";
 
+import { useUserContext } from '../contexts/user/UserContext';
+
 export default function HomeScreen() {
     const navigation = useNavigation();
 
@@ -23,6 +25,11 @@ export default function HomeScreen() {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState(null);
+
+    // Get the current user from context
+    const { user } = useUserContext();
+    const currentUserEmail = user?.email;
+    console.log(currentUserEmail)
 
     async function fetchRecipes(isRefreshing = false) {
         try {
@@ -96,6 +103,10 @@ export default function HomeScreen() {
 
     const renderHeader = () => (
         <View>
+            <View style={styles.authorLine}>
+                <Text style={styles.authorText}>Welcome, {currentUserEmail}!</Text>
+            </View>
+
             <Image
                 source={require('../../assets/home/home-image.jpg')}
                 style={styles.heroImage}
@@ -151,6 +162,20 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+    authorText: {
+        fontSize: 16,
+        color: '#972424',
+        marginLeft: 8,
+        fontWeight: 'bold',
+
+    },
+    authorLine: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 10,
+        backgroundColor: '#fed822',
+    },
     container: {
         backgroundColor: '#f8f8f8',
         paddingBottom: 16,

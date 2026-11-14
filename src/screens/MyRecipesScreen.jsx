@@ -107,6 +107,7 @@ export default function MyRecipesScreen() {
     // Success state
     return (
         <FlatList
+            style={styles.list}
             data={recipes}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
@@ -182,5 +183,8 @@ const styles = StyleSheet.create({
         color: '#666',
         textAlign: 'center',
         marginTop: 40,
+    },
+    list: {
+        paddingTop: 16,
     },
 });
