@@ -31,7 +31,7 @@ export default function HomeScreen() {
     // Get the current user from context
     const { user } = useUserContext();
     const currentUserEmail = user?.email;
-    console.log(currentUserEmail)
+    // console.log(currentUserEmail)
 
     async function fetchRecipes(isRefreshing = false) {
         try {
@@ -66,7 +66,7 @@ export default function HomeScreen() {
 
     useFocusEffect(
         useCallback(() => {
-            console.log("mina", route.params?.shouldRefresh)
+            // console.log("mina", route.params?.shouldRefresh)
             if (currentUserEmail && route.params?.shouldRefresh) {
                 fetchRecipes();
 
