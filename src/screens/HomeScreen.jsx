@@ -13,13 +13,15 @@ import {
 
 import RecipeCard from "../components/RecipeCard";
 import CategoryItemCard from "../components/CategoryItemCard";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/native";
+import { useCallback } from "react";
 import { supabase } from "../lib/supabase";
 
 import { useUserContext } from '../contexts/user/UserContext';
 
 export default function HomeScreen() {
     const navigation = useNavigation();
+    const route = useRoute();
 
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -62,8 +64,19 @@ export default function HomeScreen() {
         fetchRecipes();
     }, []);
 
+    useFocusEffect(
+        useCallback(() => {
+            console.log("mina", route.params?.shouldRefresh)
+            if (currentUserEmail && route.params?.shouldRefresh) {
+                fetchRecipes();
+
+                navigation.setParams({ shouldRefresh: false });
+            }
+        }, [currentUserEmail, route.params?.shouldRefresh])
+    );
+
     const recipePressHandled = (item) => {
-        navigation.navigate('Details', { item });
+        navigation.navigate('Details', { item, from: 'Home'});
     };
 
     // Loading state

@@ -1,18 +1,55 @@
-import { StyleSheet, View, ScrollView, Image, Text } from "react-native";
+import { StyleSheet, View, ScrollView, Image, Text, Alert } from "react-native";
 import Button from "../components/Button";
 
 import { Host, HorizontalDivider } from "@expo/ui/jetpack-compose";
+
+import useSupabaseTable from "../hooks/useSupabaseTable";
 
 
 export default function DetailsScreen({
     route,
     navigation,
 }) {
-    const item = route.params.item;
+    const { item, from } = route.params;
 
     const glutenFree = item.types?.glutenFree;
     const dairyFree = item.types?.dairyFree;
     const vegan = item.types?.vegan;
+
+    const { data, remove, loading } = useSupabaseTable('recipes');
+
+    const handleDelete = async () => {
+        Alert.alert(
+            'Delete recipe',
+            'Are you sure you want to delete this recipe?',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Delete',
+                    style: 'destructive',
+                    onPress: async () => {
+                        const success = await remove('id', item.id);
+
+                        if (success) {
+                            Alert.alert('Success', 'Recipe deleted successfully!');
+
+                            // navigation.getParent()?.setParams({ shouldRefresh: true });
+                            // navigation.goBack();
+                            navigation.navigate({
+                                name: from,
+                                params: { shouldRefresh: true },
+                                merge: true,
+                            });
+                        }
+                    },
+                },
+            ],
+            { cancelable: true }
+        );
+    };
 
     return (
         <View style={styles.container}>
@@ -34,33 +71,33 @@ export default function DetailsScreen({
                     <Text style={styles.description}>{item.instructions}</Text>
 
 
-                {glutenFree && <Text style={styles.dietaryLabel}>✓ Gluten Free</Text>}
-                {dairyFree && <Text style={styles.dietaryLabel}>✓ Dairy Free</Text>}
-                {vegan && <Text style={styles.dietaryLabel}>✓ Vegan</Text>}
+                    {glutenFree && <Text style={styles.dietaryLabel}>✓ Gluten Free</Text>}
+                    {dairyFree && <Text style={styles.dietaryLabel}>✓ Dairy Free</Text>}
+                    {vegan && <Text style={styles.dietaryLabel}>✓ Vegan</Text>}
 
 
-                <Host>
-                    <HorizontalDivider
-                        thickness={5}
-                        color="#e9e7e7"
-                    />
-                </Host>
-                <View style={styles.levelSection}>
-                    <Text style={styles.levelTextLabel}>
-                        Difficulty of preparation:
-                    </Text>
-                    <Text style={styles.levelNumberLabel}>
-                        {item.level}/10
-                    </Text>
-                </View>
-                <Host>
-                    <HorizontalDivider
-                        thickness={5}
-                        color="#ccc8c8"
-                        paddingTop={16}
-                    />
-                </Host>
-                
+                    <Host>
+                        <HorizontalDivider
+                            thickness={5}
+                            color="#e9e7e7"
+                        />
+                    </Host>
+                    <View style={styles.levelSection}>
+                        <Text style={styles.levelTextLabel}>
+                            Difficulty of preparation:
+                        </Text>
+                        <Text style={styles.levelNumberLabel}>
+                            {item.level}/10
+                        </Text>
+                    </View>
+                    <Host>
+                        <HorizontalDivider
+                            thickness={5}
+                            color="#ccc8c8"
+                            paddingTop={16}
+                        />
+                    </Host>
+
 
                     <Text style={styles.likes}>Likes: {item.likes}</Text>
                 </View>
@@ -75,17 +112,18 @@ export default function DetailsScreen({
                     />
                 </View>
                 <View style={styles.footerButtons}>
-                    
+
                     <Button
                         title="Edit"
                         style={styles.editButton}
                     />
                     <Button
+                        onPress={() => handleDelete()}
                         title="Delete"
                         variant="secondary"
                         style={[styles.viewDeleteButton, { borderColor: 'red', borderWidth: 1, fontColor: 'red' }]}
                     />
-                    
+
                 </View>
             </View>
         </View>

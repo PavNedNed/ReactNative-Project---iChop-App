@@ -69,7 +69,7 @@ export default function MyRecipesScreen() {
     );
 
     const recipePressHandled = (item) => {
-        navigation.navigate('Details', { item });
+        navigation.navigate('Details', { item, from: 'MyRecipes' });
     };
 
     // Loading state
