@@ -40,7 +40,8 @@ export default function AddRecipeScreen({
     // console.log(sliderValue)
 
     // user id temporary for test only
-    const { user } = useUserContext();
+    const { user, refreshRecipes } = useUserContext();
+
     const currentUserId = user?.id;
 
     const {
@@ -72,6 +73,8 @@ export default function AddRecipeScreen({
         if (result) {
             resetForm();
 
+            refreshRecipes();
+            
             // important: navigate to the MyRecipes tab after adding a recipe
             navigation.navigate('MyRecipes', {
                 screen: 'My Recipes'
