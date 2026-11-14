@@ -108,33 +108,37 @@ export default function AddRecipeScreen({
 
                     <Text style={styles.title}>Add a New Recipe</Text>
 
+                    <Text style={styles.inputLabel}>Image</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Image"
+                        placeholder="Enter image URL"
                         value={image}
                         onChangeText={setImage}
                     />
 
+                    <Text style={styles.inputLabel}>Title</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Title"
+                        placeholder="Enter recipe title"
                         value={title}
                         onChangeText={setTitle}
                         autoCapitalize="none"
                     />
 
+                    <Text style={styles.inputLabel}>Description</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Description"
+                        placeholder="Enter recipe description"
                         value={description}
                         onChangeText={setDescription}
                         multiline
                         numberOfLines={4}
                     />
 
+                    <Text style={styles.inputLabel}>Instructions</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Instructions"
+                        placeholder="Enter preparation instructions"
                         value={instructions}
                         onChangeText={setInstructions}
                         multiline
@@ -327,5 +331,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 15,
         gap: 10,
+    },
+    inputLabel: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#691c0b',
+        marginBottom: 6,
+        marginLeft: 4,
     },
 });
