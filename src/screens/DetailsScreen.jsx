@@ -5,6 +5,8 @@ import { Host, HorizontalDivider } from "@expo/ui/jetpack-compose";
 
 import useSupabaseTable from "../hooks/useSupabaseTable";
 
+import { useUserContext } from '../contexts/user/UserContext';
+
 
 export default function DetailsScreen({
     route,
@@ -17,6 +19,7 @@ export default function DetailsScreen({
     const vegan = item.types?.vegan;
 
     const { data, remove, loading } = useSupabaseTable('recipes');
+    const { refreshRecipes } = useUserContext();
 
     const handleDelete = async () => {
         Alert.alert(
@@ -38,11 +41,16 @@ export default function DetailsScreen({
 
                             // navigation.getParent()?.setParams({ shouldRefresh: true });
                             // navigation.goBack();
-                            navigation.navigate({
-                                name: from,
-                                params: { shouldRefresh: true },
-                                merge: true,
-                            });
+
+                            // navigation.navigate({
+                            //     name: from,
+                            //     params: { shouldRefresh: true },
+                            //     merge: true,
+                            // });
+                            
+                            // After successful CRUD
+                            refreshRecipes();
+                            navigation.goBack();
                         }
                     },
                 },

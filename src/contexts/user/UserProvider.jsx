@@ -50,11 +50,19 @@ export default function UserProvider({
         saveUser(null);
     };
 
+    const [recipesUpdated, setRecipesUpdated] = useState(0);
+
+    function refreshRecipes() {
+        setRecipesUpdated(prev => prev + 1);
+    }
+
     const contextData = {
         isAuthenticated: !!state,
         user: state,
         login: loginHandler,
         logout,
+        recipesUpdated,
+        refreshRecipes,
     };
 
     return (

@@ -29,7 +29,7 @@ export default function HomeScreen() {
     const [error, setError] = useState(null);
 
     // Get the current user from context
-    const { user } = useUserContext();
+    const { user, refreshRecipes } = useUserContext();
     const currentUserEmail = user?.email;
     // console.log(currentUserEmail)
 
@@ -64,19 +64,25 @@ export default function HomeScreen() {
         fetchRecipes();
     }, []);
 
-    useFocusEffect(
-        useCallback(() => {
-            // console.log("mina", route.params?.shouldRefresh)
-            if (currentUserEmail && route.params?.shouldRefresh) {
-                fetchRecipes();
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         // console.log("mina", route.params?.shouldRefresh)
+    //         if (currentUserEmail && route.params?.shouldRefresh) {
+    //             fetchRecipes();
 
-                navigation.setParams({ shouldRefresh: false });
-            }
-        }, [currentUserEmail, route.params?.shouldRefresh])
-    );
+    //             navigation.setParams({ shouldRefresh: false });
+    //         }
+    //     }, [currentUserEmail, route.params?.shouldRefresh])
+    // );
+
+    const { recipesUpdated } = useUserContext();
+
+    useEffect(() => {
+        fetchRecipes();
+    }, [recipesUpdated]);
 
     const recipePressHandled = (item) => {
-        navigation.navigate('Details', { item, from: 'Home'});
+        navigation.navigate('Details', { item, from: 'Home' });
     };
 
     // Loading state
