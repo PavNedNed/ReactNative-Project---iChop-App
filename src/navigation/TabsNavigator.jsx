@@ -4,9 +4,9 @@ import HomeNavigator from "./HomeNavigator";
 import { Ionicons } from "@expo/vector-icons";
 import MyRecipesNavigator from "./MyRecipesNavigator";
 
-export default function TabsNavigator({ route }) {
-    const Tabs = createBottomTabNavigator();
+const Tabs = createBottomTabNavigator();
 
+export default function TabsNavigator({ route }) {
     return (
         <Tabs.Navigator>
             <Tabs.Screen
@@ -16,6 +16,7 @@ export default function TabsNavigator({ route }) {
                     title: 'Home',
                     headerShown: false,
                     tabBarActiveTintColor: '#E85D5D',
+                    popToTopOnBlur: true,
                     tabBarIcon: ({ color, size }) => <Ionicons name="restaurant" color={color} size={size} 
                     />,
                 }}

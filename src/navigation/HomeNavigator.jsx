@@ -4,8 +4,9 @@ import { useUserContext } from "../contexts/user/UserContext";
 import HomeScreen from "../screens/HomeScreen";
 import DetailsScreen from "../screens/DetailsScreen";
 
+const Stack = createStackNavigator();
+    
 export default function HomeNavigator({ navigation, route }) {
-    const Stack = createStackNavigator();
 
     const { logout }  = useUserContext();
 

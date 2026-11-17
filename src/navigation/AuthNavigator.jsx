@@ -4,10 +4,11 @@ import { Pressable, Text, View } from "react-native";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 
+const Stack = createStackNavigator();
+
 export default function AuthNavigator({
     navigation,
 }) {
-    const Stack = createStackNavigator();
 
     return (
         <Stack.Navigator

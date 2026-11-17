@@ -3,9 +3,9 @@ import { useUserContext } from "../contexts/user/UserContext";
 import DetailsScreen from "../screens/DetailsScreen";
 import MyRecipesScreen from "../screens/MyRecipesScreen";
 
-export default function MyRecipesNavigator({ navigation, route }) {
-    const Stack = createStackNavigator();
+const Stack = createStackNavigator();
 
+export default function MyRecipesNavigator({ navigation, route }) {
     return (
         <Stack.Navigator>
             <Stack.Screen name="My Recipes" component={MyRecipesScreen} options={{ title: "My Recipes" }} />
