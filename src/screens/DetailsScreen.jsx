@@ -2,6 +2,7 @@ import { StyleSheet, View, ScrollView, Image, Text, Alert } from "react-native";
 import Button from "../components/Button";
 
 import { Host, HorizontalDivider } from "@expo/ui/jetpack-compose";
+import Toast from 'react-native-toast-message';
 
 import useSupabaseTable from "../hooks/useSupabaseTable";
 
@@ -37,7 +38,15 @@ export default function DetailsScreen({
                         const success = await remove('id', item.id);
 
                         if (success) {
-                            Alert.alert('Success', 'Recipe deleted successfully!');
+
+                            Toast.show({
+                                type: 'success',
+                                text1: 'Recipe deleted successfully!',
+                                topOffset: 80,
+                            }); 
+
+                            // Alert.alert('Success', 'Recipe deleted successfully!');
+
 
                             // navigation.getParent()?.setParams({ shouldRefresh: true });
                             // navigation.goBack();

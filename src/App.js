@@ -1,6 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 
+import Toast from 'react-native-toast-message';
+
 import UserProvider from './contexts/user/UserProvider';
 import { UserContext } from './contexts/user/UserContext';
 
@@ -24,6 +26,7 @@ export default function App() {
           </UserContext.Consumer>
         </UserProvider>
       </NavigationContainer>
+      <Toast />
     </>
   );
 }

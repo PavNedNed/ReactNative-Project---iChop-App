@@ -74,7 +74,7 @@ export default function AddRecipeScreen({
             resetForm();
 
             refreshRecipes();
-            
+
             // important: navigate to the MyRecipes tab after adding a recipe
             navigation.navigate('MyRecipes', {
                 screen: 'My Recipes'
@@ -101,139 +101,137 @@ export default function AddRecipeScreen({
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={0}
         >
-            <PatternBackgroundWhite>
+            <ScrollView
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
+                <PatternBackgroundWhite>
+                    <View style={styles.container}>
 
-                <ScrollView
-                    contentContainerStyle={styles.container}
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                >
+                        <Text style={styles.title}>Add a New Recipe</Text>
 
-                    <Text style={styles.title}>Add a New Recipe</Text>
-
-                    <Text style={styles.inputLabel}>Image</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter image URL"
-                        value={image}
-                        onChangeText={setImage}
-                    />
-
-                    <Text style={styles.inputLabel}>Title</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter recipe title"
-                        value={title}
-                        onChangeText={setTitle}
-                        autoCapitalize="none"
-                    />
-
-                    <Text style={styles.inputLabel}>Description</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter recipe description"
-                        value={description}
-                        onChangeText={setDescription}
-                        multiline
-                        numberOfLines={4}
-                    />
-
-                    <Text style={styles.inputLabel}>Instructions</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter preparation instructions"
-                        value={instructions}
-                        onChangeText={setInstructions}
-                        multiline
-                        numberOfLines={4}
-                    />
-
-                    <View style={styles.checkboxContainer}>
-                        <Text style={[styles.label, { paddingBottom: 10 }]}>More information</Text>
-                        <View style={styles.checkboxSection}>
-                            <Checkbox
-                                style={styles.checkbox}
-                                value={glutenFree}
-                                onValueChange={setGlutenFree}
-                                color={glutenFree ? '#E85D5D' : undefined}
-                            />
-                            <Text style={styles.paragraph}>Gluten Free</Text>
-                        </View>
-
-                        <View style={styles.checkboxSection}>
-                            <Checkbox
-                                style={styles.checkbox}
-                                value={dairyFree}
-                                onValueChange={setDairyFree}
-                                color={dairyFree ? '#E85D5D' : undefined}
-                            />
-                            <Text style={styles.paragraph}>Dairy Free</Text>
-                        </View>
-
-                        <View style={styles.checkboxSection}>
-                            <Checkbox
-                                style={styles.checkbox}
-                                value={vegan}
-                                onValueChange={setVegan}
-                                color={vegan ? '#E85D5D' : undefined}
-                            />
-                            <Text style={styles.paragraph}>Vegan</Text>
-                        </View>
-                    </View>
-
-
-
-                    {/* Difficult slider START */}
-                    <View style={styles.header}>
-                        <Text style={styles.label}>Difficulty of preparation</Text>
-                        <Text style={styles.value}>{sliderValue}/10</Text>
-                    </View>
-                    <Host
-                        matchContents={{ vertical: true }}
-                        style={{ width: '100%' }}
-                    >
-                        <Slider
-                            value={sliderValue}
-                            onValueChange={(value) => setSliderValue(Math.round(value))}
-                            min={1}
-                            max={10}
-                            steps={8}
-                            colors={{
-                                thumbColor: '#E85D5D',
-                                activeTrackColor: '#E85D5D',
-                                inactiveTrackColor: '#a0a0a0',
-                                activeTickColor: '#FFFFFF',
-                                inactiveTickColor: '#636363',
-                            }}
+                        <Text style={styles.inputLabel}>Image</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Enter image URL"
+                            value={image}
+                            onChangeText={setImage}
                         />
-                    </Host>
-                    {/* Difficult slider END */}
+
+                        <Text style={styles.inputLabel}>Title</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Enter recipe title"
+                            value={title}
+                            onChangeText={setTitle}
+                            autoCapitalize="none"
+                        />
+
+                        <Text style={styles.inputLabel}>Description</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Enter recipe description"
+                            value={description}
+                            onChangeText={setDescription}
+                            multiline
+                            numberOfLines={4}
+                        />
+
+                        <Text style={styles.inputLabel}>Instructions</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Enter preparation instructions"
+                            value={instructions}
+                            onChangeText={setInstructions}
+                            multiline
+                            numberOfLines={4}
+                        />
+
+                        <View style={styles.checkboxContainer}>
+                            <Text style={[styles.label, { paddingBottom: 10 }]}>More information</Text>
+                            <View style={styles.checkboxSection}>
+                                <Checkbox
+                                    style={styles.checkbox}
+                                    value={glutenFree}
+                                    onValueChange={setGlutenFree}
+                                    color={glutenFree ? '#E85D5D' : undefined}
+                                />
+                                <Text style={styles.paragraph}>Gluten Free</Text>
+                            </View>
+
+                            <View style={styles.checkboxSection}>
+                                <Checkbox
+                                    style={styles.checkbox}
+                                    value={dairyFree}
+                                    onValueChange={setDairyFree}
+                                    color={dairyFree ? '#E85D5D' : undefined}
+                                />
+                                <Text style={styles.paragraph}>Dairy Free</Text>
+                            </View>
+
+                            <View style={styles.checkboxSection}>
+                                <Checkbox
+                                    style={styles.checkbox}
+                                    value={vegan}
+                                    onValueChange={setVegan}
+                                    color={vegan ? '#E85D5D' : undefined}
+                                />
+                                <Text style={styles.paragraph}>Vegan</Text>
+                            </View>
+                        </View>
+
+
+
+                        {/* Difficult slider START */}
+                        <View style={styles.header}>
+                            <Text style={styles.label}>Difficulty of preparation</Text>
+                            <Text style={styles.value}>{sliderValue}/10</Text>
+                        </View>
+                        <Host
+                            matchContents={{ vertical: true }}
+                            style={{ width: '100%' }}
+                        >
+                            <Slider
+                                value={sliderValue}
+                                onValueChange={(value) => setSliderValue(Math.round(value))}
+                                min={1}
+                                max={10}
+                                steps={8}
+                                colors={{
+                                    thumbColor: '#E85D5D',
+                                    activeTrackColor: '#E85D5D',
+                                    inactiveTrackColor: '#a0a0a0',
+                                    activeTickColor: '#FFFFFF',
+                                    inactiveTickColor: '#636363',
+                                }}
+                            />
+                        </Host>
+                        {/* Difficult slider END */}
 
 
 
 
-                    {loading && (
-                        <ActivityIndicator size="large" />
-                    )}
+                        {loading && (
+                            <ActivityIndicator size="large" />
+                        )}
 
-                    {/* // vij posle za toast */}
-                    {error && (
-                        <Text style={{ color: 'red' }}>
-                            {error}
-                        </Text>
-                    )}
+                        {/* // vij posle za toast */}
+                        {error && (
+                            <Text style={{ color: 'red' }}>
+                                {error}
+                            </Text>
+                        )}
 
-                    <Pressable
-                        style={styles.button}
-                        onPress={addRecipeHandler}
-                        disabled={loading}
-                    >
-                        <Text style={styles.buttonText}>{loading ? 'Creating...' : 'Add Recipe'}</Text>
-                    </Pressable>
-
-                </ScrollView>
-            </PatternBackgroundWhite>
-
+                        <Pressable
+                            style={styles.button}
+                            onPress={addRecipeHandler}
+                            disabled={loading}
+                        >
+                            <Text style={styles.buttonText}>{loading ? 'Creating...' : 'Add Recipe'}</Text>
+                        </Pressable>
+                    </View>
+                </PatternBackgroundWhite>
+            </ScrollView>
         </KeyboardAvoidingView>
     );
 }
