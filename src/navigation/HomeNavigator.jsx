@@ -1,6 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, View, Alert } from "react-native";
 import { useUserContext } from "../contexts/user/UserContext";
+import useSupabaseAuth from "../hooks/useSupabaseAuth";
 import HomeScreen from "../screens/HomeScreen";
 import DetailsScreen from "../screens/DetailsScreen";
 
@@ -8,7 +9,15 @@ const Stack = createStackNavigator();
     
 export default function HomeNavigator({ navigation, route }) {
 
-    const { logout }  = useUserContext();
+    const { logout, loading, error } = useSupabaseAuth();
+
+    const logoutHandler = async () => {
+        const { error } = await logout();
+
+        if (error) {
+            Alert.alert("Logout failed", error.message);
+        }
+    };
 
     return (
         <Stack.Navigator>
@@ -27,8 +36,7 @@ export default function HomeNavigator({ navigation, route }) {
                                     
                                 }}
                                 onPress={() => {
-                                    console.log("Logout pressed");
-                                    logout();
+                                    logoutHandler();
                                 }}
                             >
                                 <Text style={{ color: "black", fontWeight: "bold", textAlign: "center" }}>Logout ➡</Text>

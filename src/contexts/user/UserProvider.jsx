@@ -1,66 +1,40 @@
 import { useEffect, useState } from 'react';
 
-import { UserContext } from "./UserContext";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserContext } from './UserContext';
+import { supabase } from '../../lib/supabase';
 
-export default function UserProvider({
-    children,
-}) {
-    const [state, setState] = useState(null);
-
-    useEffect(() => {
-        loadUser();
-    }, []);
-
-    const loginHandler = async (email, name, id) => {
-        const newState = {
-            email,
-            name,
-            id,
-        };
-
-        console.log('Logging in with user data:', newState);
-        await saveUser(newState);
-    };
-
-    const saveUser = async (userData) => {
-        try {
-            await AsyncStorage.setItem('user', JSON.stringify(userData));
-
-            setState(userData);
-        } catch (error) {
-            console.error('Failed to save user data to AsyncStorage', error);
-        }
-    }
-
-    const loadUser = async () => {
-        try {
-            const userDataString = await AsyncStorage.getItem('user');
-            
-            if (userDataString) {
-                const userData = JSON.parse(userDataString);
-                setState(userData);
-            }
-        } catch (error) {
-            console.error('Failed to load user data from AsyncStorage', error);
-        }
-    }
-
-    const logout = () => {
-        saveUser(null);
-    };
+export default function UserProvider({ children }) {
+    const [user, setUser] = useState(null);
+    const [session, setSession] = useState(null);
+    const [authLoading, setAuthLoading] = useState(true);
 
     const [recipesUpdated, setRecipesUpdated] = useState(0);
+
+    useEffect(() => {
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange((event, session) => {
+            setSession(session);
+            setUser(session?.user ?? null);
+            setAuthLoading(false);
+
+            console.log('Auth event:', event);
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, []);
 
     function refreshRecipes() {
         setRecipesUpdated(prev => prev + 1);
     }
 
     const contextData = {
-        isAuthenticated: !!state,
-        user: state,
-        login: loginHandler,
-        logout,
+        isAuthenticated: !!user,
+        user,
+        session,
+        authLoading,
         recipesUpdated,
         refreshRecipes,
     };

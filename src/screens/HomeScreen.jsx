@@ -30,8 +30,8 @@ export default function HomeScreen() {
 
     // Get the current user from context
     const { user, refreshRecipes } = useUserContext();
-    const currentUserEmail = user?.email;
-    // console.log(currentUserEmail)
+    const currentUserName = user.user_metadata.display_name;
+    // console.log(currentUserName 
 
     async function fetchRecipes(isRefreshing = false) {
         try {
@@ -67,12 +67,12 @@ export default function HomeScreen() {
     // useFocusEffect(
     //     useCallback(() => {
     //         // console.log("mina", route.params?.shouldRefresh)
-    //         if (currentUserEmail && route.params?.shouldRefresh) {
+    //         if (currentUserName && route.params?.shouldRefresh) {
     //             fetchRecipes();
 
     //             navigation.setParams({ shouldRefresh: false });
     //         }
-    //     }, [currentUserEmail, route.params?.shouldRefresh])
+    //     }, [currentUserName  route.params?.shouldRefresh])
     // );
 
     const { recipesUpdated } = useUserContext();
@@ -123,7 +123,7 @@ export default function HomeScreen() {
     const renderHeader = () => (
         <View>
             <View style={styles.authorLine}>
-                <Text style={styles.authorText}>Welcome, {currentUserEmail}!</Text>
+                <Text style={styles.authorText}>Welcome, {currentUserName}!</Text>
             </View>
 
             <Image
