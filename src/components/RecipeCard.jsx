@@ -1,11 +1,17 @@
 import { Pressable, Image, View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Dimensions } from "react-native";
+import useSupabaseTable from "../hooks/useSupabaseTable"; // Import your hook if fetching inside
 
 const screenWidth = Dimensions.get('window').width;
+
 export default function RecipeCard({ item, featured, onPress }) {
+  // OPTION B1: If you fetch all likes inside the card (or pass all likes array as a prop like `allLikes={likesData}`):
+  // Let's assume you pass `allLikes` or fetch them:
+  const { data: allLikes } = useSupabaseTable('likes', { immediate: true });
 
-
+  // Calculate the live count for this specific recipe id
+  const liveLikesCount = allLikes ? allLikes.filter(like => like.recipe_id === item.id).length : (item.likes || 0);
 
   return (
     <Pressable
@@ -14,7 +20,7 @@ export default function RecipeCard({ item, featured, onPress }) {
         featured && styles.cardFeatured,
         pressed && styles.cardPressed,
       ]}
-       onPress={onPress}
+      onPress={onPress}
     >
       <Image
         source={{ uri: item.imageUrl }}
@@ -29,13 +35,14 @@ export default function RecipeCard({ item, featured, onPress }) {
           style={[styles.description, featured && styles.descriptionFeatured]}
           numberOfLines={featured ? 3 : 2}
         >
-          {/* {item.description} */}
           {item.description.length > 40 ? `${item.description.slice(0, 40)}...` : item.description}
         </Text>
+        
+        {/* Likes Row UI */}
         <View style={styles.likesRow}>
           <Ionicons name="heart" size={featured ? 16 : 14} color="#E85D5D" />
           <Text style={[styles.likes, featured && styles.likesFeatured]}>
-            {item.likes}
+            {liveLikesCount}
           </Text>
         </View>
       </View>
