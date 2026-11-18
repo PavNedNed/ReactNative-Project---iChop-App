@@ -5,9 +5,7 @@ import { Host, HorizontalDivider } from "@expo/ui/jetpack-compose";
 import Toast from 'react-native-toast-message';
 
 import useSupabaseTable from "../hooks/useSupabaseTable";
-
 import { useUserContext } from '../contexts/user/UserContext';
-
 
 export default function DetailsScreen({
     route,
@@ -19,8 +17,61 @@ export default function DetailsScreen({
     const dairyFree = item.types?.dairyFree;
     const vegan = item.types?.vegan;
 
-    const { data, remove, loading } = useSupabaseTable('recipes');
-    const { refreshRecipes } = useUserContext();
+    // Supabase hook for recipes (for deletion)
+    const { remove, loading: recipeLoading } = useSupabaseTable('recipes');
+    
+    // Supabase hook for likes table
+    const { 
+        data: likesData, 
+        create: createLike, 
+        remove: removeLike, 
+        loading: likesLoading 
+    } = useSupabaseTable('likes', { immediate: true, selectQuery: '*' });
+
+    const { user, isAuthenticated, refreshRecipes } = useUserContext();
+
+    // 1. Check if the current user is the owner of this recipe
+    // (Make sure your recipe object has a `user_id` field from your database)
+    const isOwner = isAuthenticated && user?.id === item.user_id;
+
+    // Check if the current user has liked this recipe
+    const userLike = likesData.find(
+        like => like.recipe_id === item.id && like.user_id === user?.id
+    );
+    const isLiked = !!userLike;
+
+    // Calculate total likes for this recipe from the fetched table data
+    const totalLikes = likesData.filter(like => like.recipe_id === item.id).length;
+
+    const handleToggleLike = async () => {
+        if (!isAuthenticated) {
+            Alert.alert('Authentication required', 'You must be logged in to like recipes.');
+            return;
+        }
+
+        if (isLiked) {
+            const success = await removeLike('id', userLike.id);
+            if (success) {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Unliked recipe',
+                    topOffset: 80,
+                });
+            }
+        } else {
+            const result = await createLike({
+                recipe_id: item.id,
+                user_id: user.id
+            });
+            if (result) {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Recipe liked!',
+                    topOffset: 80,
+                });
+            }
+        }
+    };
 
     const handleDelete = async () => {
         Alert.alert(
@@ -38,26 +89,12 @@ export default function DetailsScreen({
                         const success = await remove('id', item.id);
 
                         if (success) {
-
                             Toast.show({
                                 type: 'success',
                                 text1: 'Recipe deleted successfully!',
                                 topOffset: 80,
                             }); 
-
-                            // Alert.alert('Success', 'Recipe deleted successfully!');
-
-
-                            // navigation.getParent()?.setParams({ shouldRefresh: true });
-                            // navigation.goBack();
-
-                            // navigation.navigate({
-                            //     name: from,
-                            //     params: { shouldRefresh: true },
-                            //     merge: true,
-                            // });
                             
-                            // After successful CRUD
                             refreshRecipes();
                             navigation.goBack();
                         }
@@ -116,32 +153,43 @@ export default function DetailsScreen({
                     </Host>
 
 
-                    <Text style={styles.likes}>Likes: {item.likes}</Text>
+                    <Text style={styles.likes}>Likes: {totalLikes}</Text>
                 </View>
             </ScrollView>
 
             <View style={styles.footer}>
-                <View style={[styles.footerButtons, { paddingBottom: 16 }]}>
-                    <Button
-                        title="Like recipe"
-                        variant="outline"
-                        style={styles.editButton}
-                    />
-                </View>
-                <View style={styles.footerButtons}>
+                {/* 2. Show Like button ONLY if logged in AND NOT the owner */}
+                {isAuthenticated && !isOwner && (
+                    <View style={[styles.footerButtons, { paddingBottom: 16 }]}>
+                        <Button
+                            title={likesLoading ? "Loading..." : (isLiked ? "❤️ Liked" : "🤍 Like recipe")}
+                            variant="outline"
+                            style={styles.editButton}
+                            onPress={handleToggleLike}
+                            disabled={likesLoading}
+                        />
+                    </View>
+                )}
 
-                    <Button
-                        title="Edit"
-                        style={styles.editButton}
-                    />
-                    <Button
-                        onPress={() => handleDelete()}
-                        title="Delete"
-                        variant="secondary"
-                        style={[styles.viewDeleteButton, { borderColor: 'red', borderWidth: 1, fontColor: 'red' }]}
-                    />
-
-                </View>
+                {/* 3. Show Edit and Delete buttons ONLY if the user is the owner */}
+                {isOwner && (
+                    <View style={styles.footerButtons}>
+                        <Button
+                            title="Edit"
+                            style={styles.editButton}
+                            onPress={() => {
+                                // Add your navigation to Edit screen here
+                            }}
+                        />
+                        <Button
+                            onPress={handleDelete}
+                            title={recipeLoading ? "Deleting..." : "Delete"}
+                            variant="secondary"
+                            style={[styles.viewDeleteButton, { borderColor: 'red', borderWidth: 1 }]}
+                            disabled={recipeLoading}
+                        />
+                    </View>
+                )}
             </View>
         </View>
     );
@@ -158,15 +206,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-    },
-    center: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    errorText: {
-        fontSize: 16,
-        color: '#FF3B30',
     },
     image: {
         width: '100%',
@@ -191,37 +230,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#691c0b',
         fontWeight: '600',
-    },
-    qtySection: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    qtyLabel: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#333',
+        marginTop: 8,
     },
     footer: {
         padding: 16,
         backgroundColor: '#fff',
         borderTopWidth: 1,
         borderTopColor: '#e0e0e0',
-    },
-    priceContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 12,
-    },
-    totalLabel: {
-        fontSize: 16,
-        color: '#666',
-    },
-    totalPrice: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#333',
     },
     footerButtons: {
         flexDirection: 'row',
@@ -254,6 +269,5 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-
     }
 });

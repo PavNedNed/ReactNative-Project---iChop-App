@@ -42,7 +42,9 @@ export default function AddRecipeScreen({
     // user id temporary for test only
     const { user, refreshRecipes } = useUserContext();
 
-    const currentUserId = user?.id;
+    // const currentUserId = user?.id;
+    // manually add to the object
+        // "user_id": currentUserId
 
     const {
         create,
@@ -64,7 +66,7 @@ export default function AddRecipeScreen({
                 "dairyFree": dairyFree,
                 "vegan": vegan
             },
-            "user_id": currentUserId
+
         };
         console.log('Adding recipe with:', newRecipe);
 
