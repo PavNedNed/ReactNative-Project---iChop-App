@@ -3,6 +3,8 @@ import TabsNavigator from "./TabsNavigator";
 
 const Stack = createStackNavigator();
 
+// Leave option to add more independent screens in the future
+
 export default function RootNavigator() {
     return (
         <Stack.Navigator>

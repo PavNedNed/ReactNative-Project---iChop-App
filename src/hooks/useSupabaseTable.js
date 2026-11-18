@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Alert } from 'react-native';
-import { supabase } from '../lib/supabase'; // Adjust path to your Supabase client initialization
+import { supabase } from '../lib/supabase';
 
 export default function useSupabaseTable(table, { immediate = true, selectQuery = '*' } = {}) {
     const [data, setData] = useState([]);
