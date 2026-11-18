@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import {
     View,
@@ -8,38 +9,40 @@ import {
     Image,
     KeyboardAvoidingView,
     Platform,
-    ScrollView
+    ScrollView,
+    ActivityIndicator,
+    Alert
 } from 'react-native';
+
 import PatternBackground from '../components/PatternBackground';
+import useSupabaseAuth from '../hooks/useSupabaseAuth';
 
-import { useUserContext } from '../contexts/user/UserContext';
-
-export default function LoginScreen({
-    navigation,
-    route
-
-}) {
+export default function LoginScreen({ navigation, route }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const { login }  = useUserContext();
+    const { login, loading, error, clearError } = useSupabaseAuth();
 
-    const loginHandler = () => {
-        // console.log('Login handler called with:', { email, password });
-
-        // Dummy data for user IDs based on email
-        let id = "c4d1a6f8-3e72-49b5-8a0c-2f6d9e1b4a37";
-
-        if(email === "pavel@abv.bg") {
-            id = "7f3a2c91-8d64-4b21-a5e7-1c9f0b6d2a43";
-        } else if(email === "mitko@abv.bg") {
-            id = "2b8e5d74-1a93-46c0-9f52-6d3a8b1e7c25";
-        } else {
-            id = "c4d1a6f8-3e72-49b5-8a0c-2f6d9e1b4a37";
+    const loginHandler = async () => {
+        // Validation
+        if (!email.trim() || !password) {
+            return Alert.alert('Error', 'Please fill in all fields.');
         }
 
-        login(email, password, id);
-    }
+        // Login user
+        const { data, error } = await login(
+            email.trim(),
+            password
+        );
+
+        if (error) {
+            return;
+        }
+
+        if (data?.user) {
+            Alert.alert('Success', 'Logged in successfully!');
+        }
+    };
 
     return (
         <KeyboardAvoidingView
@@ -48,51 +51,73 @@ export default function LoginScreen({
             keyboardVerticalOffset={0}
         >
             <PatternBackground>
+                <ScrollView
+                    contentContainerStyle={styles.container}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                >
+                    <Image
+                        source={require('../../assets/home/auth-image.png')}
+                        style={styles.heroImage}
+                        resizeMode="cover"
+                    />
 
-            <ScrollView
-                contentContainerStyle={styles.container}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-            >
+                    <Text style={styles.title}>Login to continue</Text>
 
-                <Image
-                source={require('../../assets/home/auth-image.png')}
-                style={styles.heroImage}
-                resizeMode="cover"
-            />
+                    {/* Supabase error */}
+                    {error && (
+                        <Text style={styles.errorText}>
+                            {error}
+                        </Text>
+                    )}
 
-            <Text style={styles.title}>Login to continue</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={(value) => {
+                            setEmail(value);
+                            clearError();
+                        }}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                    />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-            />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Password"
+                        value={password}
+                        onChangeText={(value) => {
+                            setPassword(value);
+                            clearError();
+                        }}
+                        secureTextEntry
+                    />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={true}
-            />
+                    <Pressable
+                        style={[styles.button, loading && styles.disabledButton]}
+                        onPress={loginHandler}
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <ActivityIndicator color="#fff" />
+                        ) : (
+                            <Text style={styles.buttonText}>Login</Text>
+                        )}
+                    </Pressable>
 
-            <Pressable style={styles.button} onPress={loginHandler}>
-                <Text style={styles.buttonText}>Login</Text>
-            </Pressable>
-
-            <Pressable
-                style={styles.linkButton}
-                onPress={() => navigation.navigate('Register')}
-            >
-                <Text style={styles.linkText}>Don't have an account? Register</Text>
-            </Pressable>
-            </ScrollView>
+                    <Pressable
+                        style={styles.linkButton}
+                        onPress={() => navigation.navigate('Register')}
+                        disabled={loading}
+                    >
+                        <Text style={styles.linkText}>
+                            Don't have an account? Register
+                        </Text>
+                    </Pressable>
+                </ScrollView>
             </PatternBackground>
-
         </KeyboardAvoidingView>
     );
 }
@@ -102,8 +127,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'center',
         padding: 20,
-        paddingBottom: 100, // tova e vajno!
-        // backgroundColor: '#fed822',
+        paddingBottom: 100,
     },
     title: {
         fontSize: 32,
@@ -126,7 +150,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         borderWidth: 2,
         borderColor: '#691c0b',
-
     },
     button: {
         backgroundColor: '#691c0b',
@@ -139,6 +162,15 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
+    },
+    disabledButton: {
+        opacity: 0.6,
+    },
+    errorText: {
+        color: '#b00020',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginBottom: 15,
     },
     linkButton: {
         marginTop: 20,
