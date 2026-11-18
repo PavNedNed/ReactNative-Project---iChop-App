@@ -17,6 +17,8 @@ import {
 import PatternBackground from '../components/PatternBackground';
 import useSupabaseAuth from '../hooks/useSupabaseAuth';
 
+import Toast from 'react-native-toast-message';
+
 export default function RegisterScreen({ navigation }) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -55,9 +57,14 @@ export default function RegisterScreen({ navigation }) {
             return;
         }
 
-        // Successful registration
+        // Successful registration                     
         if (data?.user) {
-            Alert.alert('Success', 'Account created successfully!');
+            Toast.show({
+                type: 'success',
+                text1: 'Account created successfully!',
+                topOffset: 80,
+            }); 
+            // Alert.alert('Success', 'Account created successfully!');
         }
     };
 

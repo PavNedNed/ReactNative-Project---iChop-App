@@ -13,6 +13,7 @@ import {
     ActivityIndicator,
     Alert
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import PatternBackground from '../components/PatternBackground';
 import useSupabaseAuth from '../hooks/useSupabaseAuth';
@@ -40,7 +41,12 @@ export default function LoginScreen({ navigation, route }) {
         }
 
         if (data?.user) {
-            Alert.alert('Success', 'Logged in successfully!');
+            Toast.show({
+                type: 'success',
+                text1: 'Logged in successfully!',
+                topOffset: 80,
+            }); 
+            // Alert.alert('Success', 'Logged in successfully!');
         }
     };
 
