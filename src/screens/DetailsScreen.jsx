@@ -19,13 +19,13 @@ export default function DetailsScreen({
 
     // Supabase hook for recipes (for deletion)
     const { remove, loading: recipeLoading } = useSupabaseTable('recipes');
-    
+
     // Supabase hook for likes table
-    const { 
-        data: likesData, 
-        create: createLike, 
-        remove: removeLike, 
-        loading: likesLoading 
+    const {
+        data: likesData,
+        create: createLike,
+        remove: removeLike,
+        loading: likesLoading
     } = useSupabaseTable('likes', { immediate: true, selectQuery: '*' });
 
     const { user, isAuthenticated, refreshRecipes } = useUserContext();
@@ -93,8 +93,8 @@ export default function DetailsScreen({
                                 type: 'success',
                                 text1: 'Recipe deleted successfully!',
                                 topOffset: 80,
-                            }); 
-                            
+                            });
+
                             refreshRecipes();
                             navigation.goBack();
                         }
@@ -103,6 +103,12 @@ export default function DetailsScreen({
             ],
             { cancelable: true }
         );
+    };
+
+    const getLevelColor = (level) => {
+        if (level <= 3) return '#1e8327'; // Green
+        if (level <= 7) return '#d4ac0d'; // Yellow/Amber
+        return '#FF3B30';                 // Red
     };
 
     return (
@@ -140,7 +146,7 @@ export default function DetailsScreen({
                         <Text style={styles.levelTextLabel}>
                             Difficulty of preparation:
                         </Text>
-                        <Text style={styles.levelNumberLabel}>
+                        <Text style={[styles.levelNumberLabel, { color: getLevelColor(item.level) }]}>
                             {item.level}/10
                         </Text>
                     </View>
