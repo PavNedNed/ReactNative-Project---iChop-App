@@ -88,6 +88,26 @@ export default function RegisterScreen({ navigation }) {
             );
         }
 
+        const validateEmail = (email) => {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        };
+
+        if (!email) {
+            return Alert.alert(
+                'Error',
+                'Email is required.'
+            );
+        } else if (!validateEmail(email)) {
+            return Alert.alert(
+                'Error',
+                'Please enter a valid email address.'
+            );
+        } else {
+            // Proceed with your submit logic
+            console.log('Email is valid:', email);
+        }
+
         // Register user
         const { data, error } = await register(
             email.trim(),

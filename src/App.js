@@ -1,5 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import Toast from 'react-native-toast-message';
 
@@ -14,19 +15,21 @@ import { useState } from 'react'; // remove later
 export default function App() {
   return (
     <>
-      <StatusBar style="dark" backgroundColor="#FFFFFF" keyboardHandlingEnabled={true} />
-      <NavigationContainer>
-        <UserProvider>
-          <UserContext.Consumer>
-            {({ isAuthenticated }) =>
-              isAuthenticated
-                ? <RootNavigator/>
-                : <AuthNavigator/>
-            }
-          </UserContext.Consumer>
-        </UserProvider>
-      </NavigationContainer>
-      <Toast />
+      <SafeAreaProvider>
+        <StatusBar style="dark" backgroundColor="#FFFFFF" keyboardHandlingEnabled={true} />
+        <NavigationContainer>
+          <UserProvider>
+            <UserContext.Consumer>
+              {({ isAuthenticated }) =>
+                isAuthenticated
+                  ? <RootNavigator />
+                  : <AuthNavigator />
+              }
+            </UserContext.Consumer>
+          </UserProvider>
+        </NavigationContainer>
+        <Toast />
+      </SafeAreaProvider>
     </>
   );
 }
