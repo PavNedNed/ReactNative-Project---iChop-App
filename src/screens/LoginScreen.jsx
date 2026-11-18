@@ -1,5 +1,6 @@
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+
 import {
     View,
     Text,
@@ -8,11 +9,13 @@ import {
     StyleSheet,
     Image,
     KeyboardAvoidingView,
+    Keyboard,
     Platform,
     ScrollView,
     ActivityIndicator,
     Alert
 } from 'react-native';
+
 import Toast from 'react-native-toast-message';
 
 import PatternBackground from '../components/PatternBackground';
@@ -23,6 +26,53 @@ export default function LoginScreen({ navigation, route }) {
     const [password, setPassword] = useState('');
 
     const { login, loading, error, clearError } = useSupabaseAuth();
+
+    // ScrollView reference
+    const scrollViewRef = useRef(null);
+
+    // Input references
+    const emailInput = useRef(null);
+    const passwordInput = useRef(null);
+
+    // Currently focused input
+    const focusedInput = useRef(null);
+
+    // Scroll to focused input
+    const scrollToFocusedInput = () => {
+        const input = focusedInput.current;
+
+        if (!input || !scrollViewRef.current) return;
+
+        requestAnimationFrame(() => {
+            input.measureLayout(
+                scrollViewRef.current,
+                (x, y) => {
+                    scrollViewRef.current?.scrollTo({
+                        y: Math.max(0, y - 30),
+                        animated: true,
+                    });
+                },
+                () => {
+                    console.log('Could not measure input position');
+                }
+            );
+        });
+    };
+
+    // Listen for keyboard opening
+    useEffect(() => {
+        const subscription = Keyboard.addListener(
+            'keyboardDidShow',
+            scrollToFocusedInput
+        );
+
+        return () => subscription.remove();
+    }, []);
+
+    // Remember focused input
+    const handleInputFocus = (inputRef) => {
+        focusedInput.current = inputRef;
+    };
 
     const loginHandler = async () => {
         // Validation
@@ -45,8 +95,7 @@ export default function LoginScreen({ navigation, route }) {
                 type: 'success',
                 text1: 'Logged in successfully!',
                 topOffset: 80,
-            }); 
-            // Alert.alert('Success', 'Logged in successfully!');
+            });
         }
     };
 
@@ -58,8 +107,11 @@ export default function LoginScreen({ navigation, route }) {
         >
             <PatternBackground>
                 <ScrollView
+                    ref={scrollViewRef}
+                    style={{ flex: 1 }}
                     contentContainerStyle={styles.container}
                     keyboardShouldPersistTaps="handled"
+                    keyboardDismissMode="on-drag"
                     showsVerticalScrollIndicator={false}
                 >
                     <Image
@@ -77,7 +129,9 @@ export default function LoginScreen({ navigation, route }) {
                         </Text>
                     )}
 
+                    {/* Email */}
                     <TextInput
+                        ref={emailInput}
                         style={styles.input}
                         placeholder="Email"
                         value={email}
@@ -85,12 +139,15 @@ export default function LoginScreen({ navigation, route }) {
                             setEmail(value);
                             clearError();
                         }}
+                        onFocus={() => handleInputFocus(emailInput.current)}
                         keyboardType="email-address"
                         autoCapitalize="none"
                         autoCorrect={false}
                     />
 
+                    {/* Password */}
                     <TextInput
+                        ref={passwordInput}
                         style={styles.input}
                         placeholder="Password"
                         value={password}
@@ -98,6 +155,7 @@ export default function LoginScreen({ navigation, route }) {
                             setPassword(value);
                             clearError();
                         }}
+                        onFocus={() => handleInputFocus(passwordInput.current)}
                         secureTextEntry
                     />
 

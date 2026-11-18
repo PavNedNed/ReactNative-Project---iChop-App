@@ -1,5 +1,6 @@
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+
 import {
     View,
     Text,
@@ -8,10 +9,11 @@ import {
     StyleSheet,
     Alert,
     KeyboardAvoidingView,
+    Keyboard,
     Platform,
     ScrollView,
     Image,
-    ActivityIndicator
+    ActivityIndicator,
 } from 'react-native';
 
 import PatternBackground from '../components/PatternBackground';
@@ -26,6 +28,48 @@ export default function RegisterScreen({ navigation }) {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const { register, loading, error, clearError } = useSupabaseAuth();
+
+    const scrollViewRef = useRef(null);
+
+    // Keep reference to the currently focused input
+    const focusedInput = useRef(null);
+
+    // Scroll to the focused input after keyboard opens
+    const scrollToFocusedInput = () => {
+        const input = focusedInput.current;
+
+        if (!input || !scrollViewRef.current) return;
+
+        requestAnimationFrame(() => {
+            input.measureLayout(
+                scrollViewRef.current,
+                (x, y) => {
+                    scrollViewRef.current?.scrollTo({
+                        y: Math.max(0, y - 30),
+                        animated: true,
+                    });
+                },
+                () => {
+                    console.log('Could not measure input position');
+                }
+            );
+        });
+    };
+
+    // Listen for keyboard opening
+    useEffect(() => {
+        const subscription = Keyboard.addListener(
+            'keyboardDidShow',
+            scrollToFocusedInput
+        );
+
+        return () => subscription.remove();
+    }, []);
+
+    // Remember focused input
+    const handleInputFocus = (inputRef) => {
+        focusedInput.current = inputRef;
+    };
 
     const registerHandler = async () => {
         // Validation
@@ -53,18 +97,15 @@ export default function RegisterScreen({ navigation }) {
             }
         );
 
-        if (error) {
-            return;
-        }
+        if (error) return;
 
-        // Successful registration                     
+        // Successful registration
         if (data?.user) {
             Toast.show({
                 type: 'success',
                 text1: 'Account created successfully!',
                 topOffset: 80,
-            }); 
-            // Alert.alert('Success', 'Account created successfully!');
+            });
         }
     };
 
@@ -76,9 +117,11 @@ export default function RegisterScreen({ navigation }) {
         >
             <PatternBackground>
                 <ScrollView
+                    ref={scrollViewRef}
                     style={{ flex: 1 }}
                     contentContainerStyle={styles.container}
                     keyboardShouldPersistTaps="handled"
+                    keyboardDismissMode="on-drag"
                     showsVerticalScrollIndicator={false}
                 >
                     <Image
@@ -89,14 +132,17 @@ export default function RegisterScreen({ navigation }) {
 
                     <Text style={styles.title}>Create Account</Text>
 
-                    {/* Supabase error */}
                     {error && (
                         <Text style={styles.errorText}>
                             {error}
                         </Text>
                     )}
 
+                    {/* Name */}
                     <TextInput
+                        ref={(ref) => {
+                            nameInput.current = ref;
+                        }}
                         style={styles.input}
                         placeholder="Name"
                         value={name}
@@ -104,10 +150,15 @@ export default function RegisterScreen({ navigation }) {
                             setName(value);
                             clearError();
                         }}
+                        onFocus={() => handleInputFocus(nameInput.current)}
                         autoCapitalize="words"
                     />
 
+                    {/* Email */}
                     <TextInput
+                        ref={(ref) => {
+                            emailInput.current = ref;
+                        }}
                         style={styles.input}
                         placeholder="Email"
                         value={email}
@@ -115,12 +166,17 @@ export default function RegisterScreen({ navigation }) {
                             setEmail(value);
                             clearError();
                         }}
+                        onFocus={() => handleInputFocus(emailInput.current)}
                         keyboardType="email-address"
                         autoCapitalize="none"
                         autoCorrect={false}
                     />
 
+                    {/* Password */}
                     <TextInput
+                        ref={(ref) => {
+                            passwordInput.current = ref;
+                        }}
                         style={styles.input}
                         placeholder="Password"
                         value={password}
@@ -128,14 +184,20 @@ export default function RegisterScreen({ navigation }) {
                             setPassword(value);
                             clearError();
                         }}
+                        onFocus={() => handleInputFocus(passwordInput.current)}
                         secureTextEntry
                     />
 
+                    {/* Confirm Password */}
                     <TextInput
+                        ref={(ref) => {
+                            confirmPasswordInput.current = ref;
+                        }}
                         style={styles.input}
                         placeholder="Confirm Password"
                         value={confirmPassword}
                         onChangeText={setConfirmPassword}
+                        onFocus={() => handleInputFocus(confirmPasswordInput.current)}
                         secureTextEntry
                     />
 
@@ -166,24 +228,23 @@ export default function RegisterScreen({ navigation }) {
     );
 }
 
+const nameInput = { current: null };
+const emailInput = { current: null };
+const passwordInput = { current: null };
+const confirmPasswordInput = { current: null };
+
 const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         justifyContent: 'center',
         padding: 20,
-        paddingBottom: 50,
+        paddingBottom: 100,
     },
     title: {
         fontSize: 32,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 10,
-        color: '#000',
-    },
-    subtitle: {
-        fontSize: 16,
-        textAlign: 'center',
-        marginBottom: 30,
         color: '#000',
     },
     input: {
