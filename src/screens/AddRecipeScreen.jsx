@@ -20,6 +20,7 @@ import { Host, Slider } from '@expo/ui/jetpack-compose';
 import { Checkbox } from 'expo-checkbox';
 
 import useSupabaseTable from '../hooks/useSupabaseTable';
+import ImagePickerBox from '../components/CameraInputSquare';
 
 
 export default function AddRecipeScreen({
@@ -117,13 +118,20 @@ export default function AddRecipeScreen({
 
                         <Text style={styles.title}>Add a New Recipe</Text>
 
-                        <Text style={styles.inputLabel}>Image</Text>
+
+                        <ImagePickerBox
+                            imageUri={image}
+                            onPressCamera={() => console.log('Camera pressed')}
+                            onPressGallery={() => console.log('Gallery pressed')}
+                            onPressRemove={() => setImage('')}
+                        />
+                        {/* <Text style={styles.inputLabel}>Image</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Enter image URL"
                             value={image}
                             onChangeText={setImage}
-                        />
+                        /> */}
 
                         <Text style={styles.inputLabel}>Title</Text>
                         <TextInput

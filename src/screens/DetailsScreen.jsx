@@ -183,7 +183,7 @@ export default function DetailsScreen({
                             title="Edit"
                             style={styles.editButton}
                             onPress={() => {
-                                // Add your navigation to Edit screen here
+                                // Add navigation to Edit screen
                             }}
                         />
                         <Button
