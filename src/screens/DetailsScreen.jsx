@@ -31,7 +31,6 @@ export default function DetailsScreen({
     const { user, isAuthenticated, refreshRecipes } = useUserContext();
 
     // 1. Check if the current user is the owner of this recipe
-    // (Make sure your recipe object has a `user_id` field from your database)
     const isOwner = isAuthenticated && user?.id === item.user_id;
 
     // Check if the current user has liked this recipe
@@ -127,7 +126,7 @@ export default function DetailsScreen({
                     <Text style={styles.name}>{item.title}</Text>
                     <Text style={styles.description}>{item.description}</Text>
 
-                    <Text style={styles.ingredients}>Instructions: {item.ingredients}</Text>
+                    <Text style={styles.instructions}>Instructions:</Text>
                     <Text style={styles.description}>{item.instructions}</Text>
 
 
@@ -202,7 +201,7 @@ export default function DetailsScreen({
 }
 
 const styles = StyleSheet.create({
-    ingredients: {
+    instructions: {
         fontSize: 20,
         color: '#666',
         lineHeight: 22,

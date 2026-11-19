@@ -117,8 +117,11 @@ export default function HomeScreen() {
         );
     }
 
-    const reversedRecipes = [...recipes].reverse();
-    const latestRecipes = reversedRecipes.slice(0, 3);
+    let reversedRecipes = [...recipes].reverse();
+    let latestRecipes = reversedRecipes.slice(0, 3);
+
+    // let recipesEmpty = [];
+    // latestRecipes = [];
 
     const renderHeader = () => (
         <View>
@@ -166,6 +169,18 @@ export default function HomeScreen() {
                 />
             )}
             ListHeaderComponent={renderHeader}
+            ListEmptyComponent={
+                <View style={styles.emptyContainer}>
+                    <Text style={styles.emptyTitle}>
+                        No recipes found
+                    </Text>
+
+                    <Text style={styles.emptyMessage}>
+                        There are no recipes available yet.
+                        Be the first to add one!
+                    </Text>
+                </View>
+            }
             contentContainerStyle={styles.container}
             showsVerticalScrollIndicator={false}
             refreshControl={
@@ -300,5 +315,23 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: '#333',
+    },
+    emptyContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 30,
+    },
+
+    emptyTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 8,
+    },
+
+    emptyMessage: {
+        fontSize: 14,
+        color: '#666',
+        textAlign: 'center',
     },
 });
