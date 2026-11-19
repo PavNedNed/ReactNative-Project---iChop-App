@@ -157,8 +157,8 @@ export default function DetailsScreen({
                         />
                     </Host>
 
-
-                    <Text style={styles.likes}>Likes: {totalLikes}</Text>
+                    <Text style={styles.description}>Created by: {item.author_email}</Text>
+                    <Text style={styles.likes}>❤️ Likes: {totalLikes}</Text>
                 </View>
             </ScrollView>
 

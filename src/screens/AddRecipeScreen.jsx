@@ -42,6 +42,8 @@ export default function AddRecipeScreen({
     // user id temporary for test only
     const { user, refreshRecipes } = useUserContext();
 
+    
+
     // const currentUserId = user?.id;
     // manually add to the object
         // "user_id": currentUserId
@@ -55,6 +57,8 @@ export default function AddRecipeScreen({
     });
 
     const addRecipeHandler = async () => {
+        // console.log("user", user?.user_metadata?.email);
+
         const newRecipe = {
             "title": title.trim(),
             "description": description.trim(),
@@ -66,6 +70,7 @@ export default function AddRecipeScreen({
                 "dairyFree": dairyFree,
                 "vegan": vegan
             },
+            author_email: user?.user_metadata?.email,
 
         };
         console.log('Adding recipe with:', newRecipe);
@@ -107,7 +112,7 @@ export default function AddRecipeScreen({
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                <PatternBackgroundWhite>
+                {/* <PatternBackgroundWhite> */}
                     <View style={styles.container}>
 
                         <Text style={styles.title}>Add a New Recipe</Text>
@@ -232,7 +237,7 @@ export default function AddRecipeScreen({
                             <Text style={styles.buttonText}>{loading ? 'Creating...' : 'Add Recipe'}</Text>
                         </Pressable>
                     </View>
-                </PatternBackgroundWhite>
+                {/* </PatternBackgroundWhite> */}
             </ScrollView>
         </KeyboardAvoidingView>
     );
