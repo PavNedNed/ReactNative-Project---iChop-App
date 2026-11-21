@@ -114,15 +114,17 @@ export default function DetailsScreen({
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
 
-                <Image
-                    source={
-                        item.imageUrl
-                            ? { uri: item.imageUrl }
-                            : require("../../assets/home/no_image.jpg")
-                    }
-                    style={styles.image}
-                    resizeMode="cover"
-                />
+                <View style={styles.imageContainer}>
+                    <Image
+                        source={
+                            item.imageUrl
+                                ? { uri: item.imageUrl }
+                                : require("../../assets/home/no_image.jpg")
+                        }
+                        style={styles.image}
+                        resizeMode="contain"
+                    />
+                </View>
 
                 <View style={styles.content}>
                     <Text style={styles.name}>{item.title}</Text>
@@ -214,9 +216,16 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
+    imageContainer: {
+        width: '100%',
+        aspectRatio: 1,
+        backgroundColor: '#f0f0f0',
+        overflow: 'hidden',
+    },
+
     image: {
         width: '100%',
-        height: 250,
+        height: '100%',
     },
     content: {
         padding: 20,
