@@ -104,6 +104,10 @@ export default function DetailsScreen({
         );
     };
 
+    const handleEdit = () => {
+        navigation.navigate('Edit Recipe', { recipe: item });
+    };
+
     const getLevelColor = (level) => {
         if (level <= 3) return '#1e8327'; // Green
         if (level <= 7) return '#d4ac0d'; // Yellow/Amber
@@ -186,9 +190,7 @@ export default function DetailsScreen({
                         <Button
                             title="Edit"
                             style={styles.editButton}
-                            onPress={() => {
-                                // Add navigation to Edit screen
-                            }}
+                            onPress={handleEdit}
                         />
                         <Button
                             onPress={handleDelete}
