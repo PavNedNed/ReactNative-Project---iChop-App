@@ -20,27 +20,30 @@ import Slider from '@react-native-community/slider';
 import { Checkbox } from 'expo-checkbox';
 
 import useSupabaseTable from '../hooks/useSupabaseTable';
-import ImagePickerBoxEdit from '../components/CameraInputSquareEdit';
+import ImagePickerBox from '../components/CameraInputSquare';
 
 export default function EditRecipeScreen({ navigation, route }) {
-    console.log('EditRecipeScreen route params:', route.params);
+    console.log('EditRecipeScreen route params:', route.params.recipe.id);
 
     const [title, setTitle] = useState(route.params?.recipe?.title || '');
     const [description, setDescription] = useState(route.params?.recipe?.description || '');
     const [image, setImage] = useState(route.params?.recipe?.imageUrl || '');
     const [hasUnsavedImage, setHasUnsavedImage] = useState(false);
     const [pickerKey, setPickerKey] = useState(0);
-    const [instructions, setInstructions] = useState('');
-    const [sliderValue, setSliderValue] = useState(5);
+    const [instructions, setInstructions] = useState(route.params?.recipe?.instructions || '');
+    const [sliderValue, setSliderValue] = useState(route.params?.recipe?.level || 5);
 
-    const [glutenFree, setGlutenFree] = useState(false);
-    const [dairyFree, setDairyFree] = useState(false);
-    const [vegan, setVegan] = useState(false);
+    let types = route.params?.recipe?.types || [];
+
+    const [glutenFree, setGlutenFree] = useState(types.glutenFree || false);
+    const [dairyFree, setDairyFree] = useState(types.dairyFree || false);
+    const [vegan, setVegan] = useState(types.vegan || false);
 
     const { user, refreshRecipes } = useUserContext();
 
     const {
         create,
+        update,
         loading,
         error
     } = useSupabaseTable('recipes', {
@@ -157,7 +160,26 @@ export default function EditRecipeScreen({ navigation, route }) {
             return;
         }
 
-        const newRecipe = {
+        // const newRecipe = {
+        //     title: title.trim(),
+        //     description: description.trim(),
+        //     imageUrl: image,
+        //     instructions: instructions.trim(),
+        //     level: Number(sliderValue),
+        //     types: {
+        //         glutenFree,
+        //         dairyFree,
+        //         vegan
+        //     },
+        //     author_email: user?.user_metadata?.email,
+        // };
+
+        // console.log('Editing recipe with:', newRecipe);
+
+        // const result = await create(newRecipe);
+
+        // start update
+        const updatedRecipe = {
             title: title.trim(),
             description: description.trim(),
             imageUrl: image,
@@ -168,22 +190,24 @@ export default function EditRecipeScreen({ navigation, route }) {
                 dairyFree,
                 vegan
             },
-            author_email: user?.user_metadata?.email,
         };
 
-        console.log('Editing recipe with:', newRecipe);
-
-        const result = await create(newRecipe);
+        const result = await update('id', route.params.recipe.id, updatedRecipe);
 
         if (result) {
-            resetForm();
-
-            refreshRecipes();
-
-            navigation.navigate('MyRecipes', {
-                screen: 'My Recipes'
-            });
+            console.log('Recipe updated successfully!');
+            navigation.goBack();
         }
+
+        // if (result) {
+        //     resetForm();
+
+        //     refreshRecipes();
+
+        //     navigation.navigate('MyRecipes', {
+        //         screen: 'My Recipes'
+        //     });
+        // }
     };
 
     // Reset form
@@ -217,7 +241,7 @@ export default function EditRecipeScreen({ navigation, route }) {
                 <View style={styles.container}>
                     <Text style={styles.title}>Edit Recipe</Text>
 
-                    <ImagePickerBoxEdit
+                    <ImagePickerBox
                         key={pickerKey}
                         initialImageUrl={image}
                         onImageChange={handleImageChange}
