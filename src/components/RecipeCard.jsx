@@ -13,6 +13,8 @@ export default function RecipeCard({ item, featured, onPress }) {
   // Calculate the live count for this specific recipe id
   const liveLikesCount = allLikes ? allLikes.filter(like => like.recipe_id === item.id).length : (item.likes || 0);
 
+  // console.log("imageUrl: " + item.imageUrl);
+
   return (
     <Pressable
       style={({ pressed }) => [
@@ -23,7 +25,11 @@ export default function RecipeCard({ item, featured, onPress }) {
       onPress={onPress}
     >
       <Image
-        source={{ uri: item.imageUrl }}
+        source={
+          item.imageUrl
+            ? { uri: item.imageUrl }
+            : require("../../assets/home/no_image.jpg")
+        }
         style={[styles.thumbnail, featured && styles.thumbnailFeatured]}
       />
 
@@ -37,7 +43,7 @@ export default function RecipeCard({ item, featured, onPress }) {
         >
           {item.description.length > 40 ? `${item.description.slice(0, 40)}...` : item.description}
         </Text>
-        
+
         {/* Likes Row UI */}
         <View style={styles.likesRow}>
           <Ionicons name="heart" size={featured ? 16 : 14} color="#E85D5D" />

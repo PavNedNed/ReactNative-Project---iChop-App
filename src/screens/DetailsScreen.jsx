@@ -114,13 +114,15 @@ export default function DetailsScreen({
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
 
-                {item.imageUrl && (
-                    <Image
-                        source={{ uri: item.imageUrl }}
-                        style={styles.image}
-                        resizeMode="cover"
-                    />
-                )}
+                <Image
+                    source={
+                        item.imageUrl
+                            ? { uri: item.imageUrl }
+                            : require("../../assets/home/no_image.jpg")
+                    }
+                    style={styles.image}
+                    resizeMode="cover"
+                />
 
                 <View style={styles.content}>
                     <Text style={styles.name}>{item.title}</Text>

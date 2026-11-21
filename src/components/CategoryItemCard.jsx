@@ -20,7 +20,17 @@ export default function CategoryItemCard({
                     },
                 ]}
             >
-                <Image source={{ uri: imageUrl }} style={[styles.image, styles.imageHorizontal]} />
+                {/* <Image source={{ uri: imageUrl }} style={[styles.image, styles.imageHorizontal]} /> */}
+
+                <Image
+                    source={
+                        imageUrl
+                            ? { uri: imageUrl }
+                            : require("../../assets/home/no_image.jpg")
+                    }
+                    style={[styles.image, styles.imageHorizontal]}
+                />
+
                 <View style={[styles.content, styles.contentHorizontal]}>
                     <Text style={styles.title}>{title}</Text>
                     {/* <Text style={styles.subtitle}>{description}</Text> */}
