@@ -30,7 +30,8 @@ export default function HomeScreen() {
 
     // Get the current user from context
     const { user, refreshRecipes } = useUserContext();
-    const currentUserName = user.user_metadata.display_name;
+    // const currentUserName = user.user_metadata.display_name;
+    const currentUserName = user?.user_metadata?.display_name ?? 'User';
     // console.log(currentUserName 
 
     async function fetchRecipes(isRefreshing = false) {

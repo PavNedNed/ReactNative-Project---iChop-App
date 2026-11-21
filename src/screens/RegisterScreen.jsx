@@ -31,6 +31,12 @@ export default function RegisterScreen({ navigation }) {
 
     const scrollViewRef = useRef(null);
 
+    // Input refs
+    const nameInput = useRef(null);
+    const emailInput = useRef(null);
+    const passwordInput = useRef(null);
+    const confirmPasswordInput = useRef(null);
+
     // Keep reference to the currently focused input
     const focusedInput = useRef(null);
 
@@ -94,17 +100,13 @@ export default function RegisterScreen({ navigation }) {
         };
 
         if (!email) {
-            return Alert.alert(
-                'Error',
-                'Email is required.'
-            );
+            return Alert.alert('Error', 'Email is required.');
         } else if (!validateEmail(email)) {
             return Alert.alert(
                 'Error',
                 'Please enter a valid email address.'
             );
         } else {
-            // Proceed with your submit logic
             console.log('Email is valid:', email);
         }
 
@@ -160,9 +162,7 @@ export default function RegisterScreen({ navigation }) {
 
                     {/* Name */}
                     <TextInput
-                        ref={(ref) => {
-                            nameInput.current = ref;
-                        }}
+                        ref={nameInput}
                         style={styles.input}
                         placeholder="Name"
                         value={name}
@@ -176,9 +176,7 @@ export default function RegisterScreen({ navigation }) {
 
                     {/* Email */}
                     <TextInput
-                        ref={(ref) => {
-                            emailInput.current = ref;
-                        }}
+                        ref={emailInput}
                         style={styles.input}
                         placeholder="Email"
                         value={email}
@@ -194,9 +192,7 @@ export default function RegisterScreen({ navigation }) {
 
                     {/* Password */}
                     <TextInput
-                        ref={(ref) => {
-                            passwordInput.current = ref;
-                        }}
+                        ref={passwordInput}
                         style={styles.input}
                         placeholder="Password"
                         value={password}
@@ -210,9 +206,7 @@ export default function RegisterScreen({ navigation }) {
 
                     {/* Confirm Password */}
                     <TextInput
-                        ref={(ref) => {
-                            confirmPasswordInput.current = ref;
-                        }}
+                        ref={confirmPasswordInput}
                         style={styles.input}
                         placeholder="Confirm Password"
                         value={confirmPassword}
@@ -247,11 +241,6 @@ export default function RegisterScreen({ navigation }) {
         </KeyboardAvoidingView>
     );
 }
-
-const nameInput = { current: null };
-const emailInput = { current: null };
-const passwordInput = { current: null };
-const confirmPasswordInput = { current: null };
 
 const styles = StyleSheet.create({
     container: {
