@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
     View,
     Text,
     TextInput,
     Pressable,
     StyleSheet,
-    Image,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
@@ -14,14 +13,11 @@ import {
 } from 'react-native';
 
 import { useUserContext } from '../contexts/user/UserContext';
-import PatternBackgroundWhite from '../components/PatternBackgroundWhite';
-
-import { Host, Slider } from '@expo/ui/jetpack-compose';
+import Slider from '@react-native-community/slider';
 import { Checkbox } from 'expo-checkbox';
 
 import useSupabaseTable from '../hooks/useSupabaseTable';
 import ImagePickerBox from '../components/CameraInputSquare';
-
 
 export default function AddRecipeScreen({
     navigation,
@@ -30,24 +26,16 @@ export default function AddRecipeScreen({
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [image, setImage] = useState('');
+    const [hasUnsavedImage, setHasUnsavedImage] = useState(false);
+    const [pickerKey, setPickerKey] = useState(0);
     const [instructions, setInstructions] = useState('');
     const [sliderValue, setSliderValue] = useState(5);
-
 
     const [glutenFree, setGlutenFree] = useState(false);
     const [dairyFree, setDairyFree] = useState(false);
     const [vegan, setVegan] = useState(false);
 
-    // console.log(sliderValue)
-
-    // user id temporary for test only
     const { user, refreshRecipes } = useUserContext();
-
-    
-
-    // const currentUserId = user?.id;
-    // manually add to the object
-        // "user_id": currentUserId
 
     const {
         create,
@@ -57,43 +45,71 @@ export default function AddRecipeScreen({
         immediate: false
     });
 
+    const handleImageChange = useCallback((url) => {
+        if (!url) {
+            setImage('');
+        }
+    }, []);
+
+    const handleUploadSuccess = useCallback((publicUrl) => {
+        if (publicUrl) {
+            setImage(publicUrl);
+        }
+    }, []);
+
+    const handlePendingChange = useCallback((isPending) => {
+        setHasUnsavedImage(isPending);
+        if (isPending) {
+            setImage('');
+        }
+    }, []);
+
     const addRecipeHandler = async () => {
-        // console.log("user", user?.user_metadata?.email);
+        console.log('Adding recipe...');
+
+        if (hasUnsavedImage) {
+            Alert.alert(
+                'Save Image First',
+                'Please tap SAVE on your photo to upload it before adding the recipe.'
+            );
+            return;
+        }
 
         const newRecipe = {
-            "title": title.trim(),
-            "description": description.trim(),
-            "imageUrl": image.trim(),
-            "instructions": instructions.trim(),
-            "level": Number(sliderValue),
-            "types": {
-                "glutenFree": glutenFree,
-                "dairyFree": dairyFree,
-                "vegan": vegan
+            title: title.trim(),
+            description: description.trim(),
+            imageUrl: image,
+            instructions: instructions.trim(),
+            level: Number(sliderValue),
+            types: {
+                glutenFree,
+                dairyFree,
+                vegan
             },
             author_email: user?.user_metadata?.email,
-
         };
+
         console.log('Adding recipe with:', newRecipe);
 
         const result = await create(newRecipe);
-
+        
         if (result) {
             resetForm();
-
+        
             refreshRecipes();
-
-            // important: navigate to the MyRecipes tab after adding a recipe
+        
             navigation.navigate('MyRecipes', {
                 screen: 'My Recipes'
             });
         }
-    }
+    };
 
     const resetForm = () => {
         setTitle('');
         setDescription('');
         setImage('');
+        setHasUnsavedImage(false);
+        setPickerKey((prev) => prev + 1);
         setInstructions('');
 
         setSliderValue(5);
@@ -113,139 +129,120 @@ export default function AddRecipeScreen({
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                {/* <PatternBackgroundWhite> */}
-                    <View style={styles.container}>
+                <View style={styles.container}>
+                    <Text style={styles.title}>Add a New Recipe</Text>
 
-                        <Text style={styles.title}>Add a New Recipe</Text>
+                    <ImagePickerBox
+                        key={pickerKey}
+                        initialImageUrl=""
+                        onImageChange={handleImageChange}
+                        onUploadSuccess={handleUploadSuccess}
+                        onPendingChange={handlePendingChange}
+                    />
 
+                    <Text style={styles.inputLabel}>Title</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter recipe title"
+                        value={title}
+                        onChangeText={setTitle}
+                        autoCapitalize="none"
+                    />
 
-                        <ImagePickerBox
-                            imageUri={image}
-                            onPressCamera={() => console.log('Camera pressed')}
-                            onPressGallery={() => console.log('Gallery pressed')}
-                            onPressRemove={() => setImage('')}
-                        />
-                        {/* <Text style={styles.inputLabel}>Image</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter image URL"
-                            value={image}
-                            onChangeText={setImage}
-                        /> */}
+                    <Text style={styles.inputLabel}>Description</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter recipe description"
+                        value={description}
+                        onChangeText={setDescription}
+                        multiline
+                        numberOfLines={4}
+                    />
 
-                        <Text style={styles.inputLabel}>Title</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter recipe title"
-                            value={title}
-                            onChangeText={setTitle}
-                            autoCapitalize="none"
-                        />
+                    <Text style={styles.inputLabel}>Instructions</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter preparation instructions"
+                        value={instructions}
+                        onChangeText={setInstructions}
+                        multiline
+                        numberOfLines={4}
+                    />
 
-                        <Text style={styles.inputLabel}>Description</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter recipe description"
-                            value={description}
-                            onChangeText={setDescription}
-                            multiline
-                            numberOfLines={4}
-                        />
-
-                        <Text style={styles.inputLabel}>Instructions</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter preparation instructions"
-                            value={instructions}
-                            onChangeText={setInstructions}
-                            multiline
-                            numberOfLines={4}
-                        />
-
-                        <View style={styles.checkboxContainer}>
-                            <Text style={[styles.label, { paddingBottom: 10 }]}>More information</Text>
-                            <View style={styles.checkboxSection}>
-                                <Checkbox
-                                    style={styles.checkbox}
-                                    value={glutenFree}
-                                    onValueChange={setGlutenFree}
-                                    color={glutenFree ? '#E85D5D' : undefined}
-                                />
-                                <Text style={styles.paragraph}>Gluten Free</Text>
-                            </View>
-
-                            <View style={styles.checkboxSection}>
-                                <Checkbox
-                                    style={styles.checkbox}
-                                    value={dairyFree}
-                                    onValueChange={setDairyFree}
-                                    color={dairyFree ? '#E85D5D' : undefined}
-                                />
-                                <Text style={styles.paragraph}>Dairy Free</Text>
-                            </View>
-
-                            <View style={styles.checkboxSection}>
-                                <Checkbox
-                                    style={styles.checkbox}
-                                    value={vegan}
-                                    onValueChange={setVegan}
-                                    color={vegan ? '#E85D5D' : undefined}
-                                />
-                                <Text style={styles.paragraph}>Vegan</Text>
-                            </View>
-                        </View>
-
-
-
-                        {/* Difficult slider START */}
-                        <View style={styles.header}>
-                            <Text style={styles.label}>Difficulty of preparation</Text>
-                            <Text style={styles.value}>{sliderValue}/10</Text>
-                        </View>
-                        <Host
-                            matchContents={{ vertical: true }}
-                            style={{ width: '100%' }}
-                        >
-                            <Slider
-                                value={sliderValue}
-                                onValueChange={(value) => setSliderValue(Math.round(value))}
-                                min={1}
-                                max={10}
-                                steps={8}
-                                colors={{
-                                    thumbColor: '#E85D5D',
-                                    activeTrackColor: '#E85D5D',
-                                    inactiveTrackColor: '#a0a0a0',
-                                    activeTickColor: '#FFFFFF',
-                                    inactiveTickColor: '#636363',
-                                }}
+                    <View style={styles.checkboxContainer}>
+                        <Text style={[styles.label, { paddingBottom: 10 }]}>More information</Text>
+                        <View style={styles.checkboxSection}>
+                            <Checkbox
+                                style={styles.checkbox}
+                                value={glutenFree}
+                                onValueChange={setGlutenFree}
+                                color={glutenFree ? '#E85D5D' : undefined}
                             />
-                        </Host>
-                        {/* Difficult slider END */}
+                            <Text style={styles.paragraph}>Gluten Free</Text>
+                        </View>
 
+                        <View style={styles.checkboxSection}>
+                            <Checkbox
+                                style={styles.checkbox}
+                                value={dairyFree}
+                                onValueChange={setDairyFree}
+                                color={dairyFree ? '#E85D5D' : undefined}
+                            />
+                            <Text style={styles.paragraph}>Dairy Free</Text>
+                        </View>
 
-
-
-                        {loading && (
-                            <ActivityIndicator size="large" />
-                        )}
-
-                        {/* // vij posle za toast */}
-                        {error && (
-                            <Text style={{ color: 'red' }}>
-                                {error}
-                            </Text>
-                        )}
-
-                        <Pressable
-                            style={styles.button}
-                            onPress={addRecipeHandler}
-                            disabled={loading}
-                        >
-                            <Text style={styles.buttonText}>{loading ? 'Creating...' : 'Add Recipe'}</Text>
-                        </Pressable>
+                        <View style={styles.checkboxSection}>
+                            <Checkbox
+                                style={styles.checkbox}
+                                value={vegan}
+                                onValueChange={setVegan}
+                                color={vegan ? '#E85D5D' : undefined}
+                            />
+                            <Text style={styles.paragraph}>Vegan</Text>
+                        </View>
                     </View>
-                {/* </PatternBackgroundWhite> */}
+
+                    {/* Difficult slider START */}
+                    <View style={styles.header}>
+                        <Text style={styles.label}>Difficulty of preparation</Text>
+                        <Text style={styles.value}>{sliderValue}/10</Text>
+                    </View>
+                    <Slider
+                        style={styles.slider}
+                        value={sliderValue}
+                        onValueChange={(value) => setSliderValue(Math.round(value))}
+                        minimumValue={1}
+                        maximumValue={10}
+                        step={1}
+                        minimumTrackTintColor="#E85D5D"
+                        maximumTrackTintColor="#a0a0a0"
+                        thumbTintColor="#E85D5D"
+                    />
+                    {/* Difficult slider END */}
+
+                    {loading && (
+                        <ActivityIndicator size="large" />
+                    )}
+
+                    {error && (
+                        <Text style={{ color: 'red' }}>
+                            {error}
+                        </Text>
+                    )}
+
+                    <Pressable
+                        style={({ pressed }) => [
+                            styles.button,
+                            loading && styles.buttonDisabled,
+                            pressed && !loading && styles.buttonPressed,
+                        ]}
+                        android_ripple={{ color: 'rgba(255, 255, 255, 0.25)', borderless: false }}
+                        onPress={addRecipeHandler}
+                        disabled={loading}
+                    >
+                        <Text style={styles.buttonText}>{loading ? 'Creating...' : 'Add Recipe'}</Text>
+                    </Pressable>
+                </View>
             </ScrollView>
         </KeyboardAvoidingView>
     );
@@ -270,8 +267,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'center',
         padding: 20,
-        paddingBottom: 100, // tova e vajno!
-        // backgroundColor: '#fed822',
+        paddingBottom: 100,
     },
     title: {
         fontSize: 32,
@@ -294,7 +290,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         borderWidth: 2,
         borderColor: '#691c0b',
-
     },
     button: {
         backgroundColor: '#691c0b',
@@ -302,6 +297,14 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         marginTop: 10,
+        overflow: 'hidden',
+    },
+    buttonPressed: {
+        opacity: 0.8,
+        transform: [{ scale: 0.97 }],
+    },
+    buttonDisabled: {
+        opacity: 0.5,
     },
     buttonText: {
         color: '#fff',
@@ -322,12 +325,11 @@ const styles = StyleSheet.create({
         height: 200,
         marginBottom: 10,
     },
-
     slider: {
         width: '100%',
         height: 40,
+        marginBottom: 10,
     },
-
     checkbox: {
         width: 40,
         height: 40,
@@ -335,13 +337,11 @@ const styles = StyleSheet.create({
         borderWidth: 4,
         borderColor: '#E85D5D',
     },
-
     paragraph: {
         fontSize: 20,
         color: '#691C0B',
         fontWeight: '500',
     },
-
     checkboxSection: {
         flexDirection: 'row',
         alignItems: 'center',
