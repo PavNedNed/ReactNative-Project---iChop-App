@@ -4,6 +4,7 @@ import { useUserContext } from "../contexts/user/UserContext";
 import useSupabaseAuth from "../hooks/useSupabaseAuth";
 import HomeScreen from "../screens/HomeScreen";
 import DetailsScreen from "../screens/DetailsScreen";
+import EditRecipeScreen from "../screens/EditRecipeScreen";
 
 const Stack = createStackNavigator();
     
@@ -45,6 +46,7 @@ export default function HomeNavigator({ navigation, route }) {
                     ),
                 })} />
             <Stack.Screen name="Details" component={DetailsScreen} options={{ title: "Recipe Details" }} />
+            <Stack.Screen name="Edit Recipe" component={EditRecipeScreen} options={{ title: "Edit Recipe" }} />
         </Stack.Navigator>
     );
 }
