@@ -318,6 +318,7 @@ export default function ImagePickerBox({
   const handlePressRemove = () => {
     if (!imageUrl || operationRef.current || uploading || cameraOpen) return;
     updateImage('', { markSaved: false });
+    onImageChange?.('');
   };
 
   // Funkciya za natiskane na butona za zapazvane na snimka

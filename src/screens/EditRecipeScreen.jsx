@@ -100,12 +100,17 @@ export default function EditRecipeScreen({ navigation, route }) {
     };
 
     // Image picker handlers
-    const handleImageChange = useCallback((url) => {
-        if (!url) {
-            // setImage('');
-            setImage(route.params?.recipe?.imageUrl || '');
-        }
-    }, []);
+    // const handleImageChange = useCallback((url) => {
+    //     if (!url) {
+    //         // setImage('');
+    //         setImage(route.params?.recipe?.imageUrl || '');
+    //     }
+    // }, []);
+
+    // fix removing image when user cancels selection
+    const handleImageChange = (url) => {
+        setImage(url);
+    };
 
     const handleUploadSuccess = useCallback((publicUrl) => {
         if (publicUrl) {
@@ -113,14 +118,18 @@ export default function EditRecipeScreen({ navigation, route }) {
         }
     }, []);
 
-    const handlePendingChange = useCallback((isPending) => {
-        setHasUnsavedImage(isPending);
+    // const handlePendingChange = useCallback((isPending) => {
+    //     setHasUnsavedImage(isPending);
 
-        if (isPending) {
-            // setImage('');
-            setImage(route.params?.recipe?.imageUrl || '');
-        }
-    }, []);
+    //     if (isPending) {
+    //         // setImage('');
+    //         setImage(route.params?.recipe?.imageUrl || '');
+    //     }
+    // }, []);
+
+    const handlePendingChange = (isPending) => {
+        setHasUnsavedImage(isPending);
+    };
 
     // Add recipe handler
     const EditRecipeHandler = async () => {
@@ -215,6 +224,7 @@ export default function EditRecipeScreen({ navigation, route }) {
 
         if (result) {
             console.log('Recipe updated successfully!');
+            console.log("imageUrl:", image)
 
             refreshRecipes();
 
