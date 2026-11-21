@@ -1,4 +1,6 @@
-import { useState, useCallback } from 'react';
+
+import { useState, useCallback, useRef, useEffect } from 'react';
+
 import {
     View,
     Text,
@@ -6,6 +8,7 @@ import {
     Pressable,
     StyleSheet,
     KeyboardAvoidingView,
+    Keyboard,
     Platform,
     ScrollView,
     ActivityIndicator,
@@ -19,10 +22,7 @@ import { Checkbox } from 'expo-checkbox';
 import useSupabaseTable from '../hooks/useSupabaseTable';
 import ImagePickerBox from '../components/CameraInputSquare';
 
-export default function AddRecipeScreen({
-    navigation,
-    route
-}) {
+export default function AddRecipeScreen({ navigation, route }) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [image, setImage] = useState('');
@@ -45,6 +45,54 @@ export default function AddRecipeScreen({
         immediate: false
     });
 
+    // Refs for scrolling
+    const scrollViewRef = useRef(null);
+
+    const titleInput = useRef(null);
+    const descriptionInput = useRef(null);
+    const instructionsInput = useRef(null);
+
+    // Keep reference to the currently focused input
+    const focusedInput = useRef(null);
+
+    // Scroll to the focused input after keyboard opens
+    const scrollToFocusedInput = () => {
+        const input = focusedInput.current;
+
+        if (!input || !scrollViewRef.current) return;
+
+        requestAnimationFrame(() => {
+            input.measureLayout(
+                scrollViewRef.current,
+                (x, y) => {
+                    scrollViewRef.current?.scrollTo({
+                        y: Math.max(0, y - 30),
+                        animated: true,
+                    });
+                },
+                () => {
+                    console.log('Could not measure input position');
+                }
+            );
+        });
+    };
+
+    // Listen for keyboard opening
+    useEffect(() => {
+        const subscription = Keyboard.addListener(
+            'keyboardDidShow',
+            scrollToFocusedInput
+        );
+
+        return () => subscription.remove();
+    }, []);
+
+    // Remember focused input
+    const handleInputFocus = (inputRef) => {
+        focusedInput.current = inputRef;
+    };
+
+    // Image picker handlers
     const handleImageChange = useCallback((url) => {
         if (!url) {
             setImage('');
@@ -59,13 +107,43 @@ export default function AddRecipeScreen({
 
     const handlePendingChange = useCallback((isPending) => {
         setHasUnsavedImage(isPending);
+
         if (isPending) {
             setImage('');
         }
     }, []);
 
+    // Add recipe handler
     const addRecipeHandler = async () => {
         console.log('Adding recipe...');
+
+        if (!title.trim() || !description.trim() || !instructions.trim()) {
+            return Alert.alert(
+                'Error',
+                'Please fill in title, description, and instructions'
+            );
+        }
+
+        if (title.trim().length < 3) {
+            return Alert.alert(
+                'Error',
+                'Recipe title must be at least 3 characters long.'
+            );
+        }
+
+        if (description.trim().length < 10) {
+            return Alert.alert(
+                'Error',
+                'Description must be at least 10 characters long.'
+            );
+        }
+
+        if (instructions.trim().length < 10) {
+            return Alert.alert(
+                'Error',
+                'Instructions must be at least 10 characters long.'
+            );
+        }
 
         if (hasUnsavedImage) {
             Alert.alert(
@@ -92,18 +170,19 @@ export default function AddRecipeScreen({
         console.log('Adding recipe with:', newRecipe);
 
         const result = await create(newRecipe);
-        
+
         if (result) {
             resetForm();
-        
+
             refreshRecipes();
-        
+
             navigation.navigate('MyRecipes', {
                 screen: 'My Recipes'
             });
         }
     };
 
+    // Reset form
     const resetForm = () => {
         setTitle('');
         setDescription('');
@@ -126,7 +205,9 @@ export default function AddRecipeScreen({
             keyboardVerticalOffset={0}
         >
             <ScrollView
+                ref={scrollViewRef}
                 keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="on-drag"
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.container}>
@@ -141,36 +222,48 @@ export default function AddRecipeScreen({
                     />
 
                     <Text style={styles.inputLabel}>Title</Text>
+
                     <TextInput
+                        ref={titleInput}
                         style={styles.input}
                         placeholder="Enter recipe title"
                         value={title}
                         onChangeText={setTitle}
+                        onFocus={() => handleInputFocus(titleInput.current)}
                         autoCapitalize="none"
                     />
 
                     <Text style={styles.inputLabel}>Description</Text>
+
                     <TextInput
+                        ref={descriptionInput}
                         style={styles.input}
                         placeholder="Enter recipe description"
                         value={description}
                         onChangeText={setDescription}
+                        onFocus={() => handleInputFocus(descriptionInput.current)}
                         multiline
                         numberOfLines={4}
                     />
 
                     <Text style={styles.inputLabel}>Instructions</Text>
+
                     <TextInput
+                        ref={instructionsInput}
                         style={styles.input}
                         placeholder="Enter preparation instructions"
                         value={instructions}
                         onChangeText={setInstructions}
+                        onFocus={() => handleInputFocus(instructionsInput.current)}
                         multiline
                         numberOfLines={4}
                     />
 
                     <View style={styles.checkboxContainer}>
-                        <Text style={[styles.label, { paddingBottom: 10 }]}>More information</Text>
+                        <Text style={[styles.label, { paddingBottom: 10 }]}>
+                            More information
+                        </Text>
+
                         <View style={styles.checkboxSection}>
                             <Checkbox
                                 style={styles.checkbox}
@@ -202,11 +295,16 @@ export default function AddRecipeScreen({
                         </View>
                     </View>
 
-                    {/* Difficult slider START */}
+                    {/* Difficulty slider START */}
                     <View style={styles.header}>
-                        <Text style={styles.label}>Difficulty of preparation</Text>
-                        <Text style={styles.value}>{sliderValue}/10</Text>
+                        <Text style={styles.label}>
+                            Difficulty of preparation
+                        </Text>
+                        <Text style={styles.value}>
+                            {sliderValue}/10
+                        </Text>
                     </View>
+
                     <Slider
                         style={styles.slider}
                         value={sliderValue}
@@ -218,7 +316,7 @@ export default function AddRecipeScreen({
                         maximumTrackTintColor="#a0a0a0"
                         thumbTintColor="#E85D5D"
                     />
-                    {/* Difficult slider END */}
+                    {/* Difficulty slider END */}
 
                     {loading && (
                         <ActivityIndicator size="large" />
@@ -236,11 +334,16 @@ export default function AddRecipeScreen({
                             loading && styles.buttonDisabled,
                             pressed && !loading && styles.buttonPressed,
                         ]}
-                        android_ripple={{ color: 'rgba(255, 255, 255, 0.25)', borderless: false }}
+                        android_ripple={{
+                            color: 'rgba(255, 255, 255, 0.25)',
+                            borderless: false
+                        }}
                         onPress={addRecipeHandler}
                         disabled={loading}
                     >
-                        <Text style={styles.buttonText}>{loading ? 'Creating...' : 'Add Recipe'}</Text>
+                        <Text style={styles.buttonText}>
+                            {loading ? 'Creating...' : 'Add Recipe'}
+                        </Text>
                     </Pressable>
                 </View>
             </ScrollView>
