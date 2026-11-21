@@ -23,7 +23,7 @@ import useSupabaseTable from '../hooks/useSupabaseTable';
 import ImagePickerBox from '../components/CameraInputSquare';
 
 export default function EditRecipeScreen({ navigation, route }) {
-    console.log('EditRecipeScreen route params:', route.params.recipe.id);
+    // console.log('EditRecipeScreen route params:', route.params.recipe.id);
 
     const [title, setTitle] = useState(route.params?.recipe?.title || '');
     const [description, setDescription] = useState(route.params?.recipe?.description || '');
@@ -34,6 +34,8 @@ export default function EditRecipeScreen({ navigation, route }) {
     const [sliderValue, setSliderValue] = useState(route.params?.recipe?.level || 5);
 
     let types = route.params?.recipe?.types || [];
+
+    // console.log(route.params.recipe)
 
     const [glutenFree, setGlutenFree] = useState(types.glutenFree || false);
     const [dairyFree, setDairyFree] = useState(types.dairyFree || false);
@@ -178,7 +180,7 @@ export default function EditRecipeScreen({ navigation, route }) {
 
         // const result = await create(newRecipe);
 
-        // start update
+        // this object is just for updating the recipe in the database
         const updatedRecipe = {
             title: title.trim(),
             description: description.trim(),
@@ -192,11 +194,35 @@ export default function EditRecipeScreen({ navigation, route }) {
             },
         };
 
+        // create a new object just for passing to the Details screen
+        const toPassItems = {
+            id: route.params.recipe.id,
+            title: title.trim(),
+            description: description.trim(),
+            imageUrl: image,
+            instructions: instructions.trim(),
+            level: Number(sliderValue),
+            types: {
+                glutenFree,
+                dairyFree,
+                vegan
+            },
+            author_email: route.params.recipe.author_email,
+            user_id: route.params.recipe.user_id
+        };
+
         const result = await update('id', route.params.recipe.id, updatedRecipe);
 
         if (result) {
             console.log('Recipe updated successfully!');
-            navigation.goBack();
+
+            refreshRecipes();
+
+            navigation.popTo('Details', {
+                item: toPassItems,
+            });
+
+            // navigation.goBack();
         }
 
         // if (result) {

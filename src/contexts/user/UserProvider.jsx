@@ -9,6 +9,7 @@ export default function UserProvider({ children }) {
     const [authLoading, setAuthLoading] = useState(true);
 
     const [recipesUpdated, setRecipesUpdated] = useState(0);
+    const [detailsUpdated, setDetailsUpdated] = useState(0);
 
     useEffect(() => {
         const {
@@ -30,6 +31,10 @@ export default function UserProvider({ children }) {
         setRecipesUpdated(prev => prev + 1);
     }
 
+    function refreshDetails() {
+        setDetailsUpdated(prev => prev + 1);
+    }
+
     const contextData = {
         isAuthenticated: !!user,
         user,
@@ -37,6 +42,8 @@ export default function UserProvider({ children }) {
         authLoading,
         recipesUpdated,
         refreshRecipes,
+        detailsUpdated,
+        refreshDetails,
     };
 
     return (
