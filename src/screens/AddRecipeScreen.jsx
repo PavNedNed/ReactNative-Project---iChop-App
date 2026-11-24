@@ -227,6 +227,7 @@ export default function AddRecipeScreen({ navigation, route }) {
                         ref={titleInput}
                         style={styles.input}
                         placeholder="Enter recipe title"
+                        placeholderTextColor="#9c8e8b"
                         value={title}
                         onChangeText={setTitle}
                         onFocus={() => handleInputFocus(titleInput.current)}
@@ -239,6 +240,7 @@ export default function AddRecipeScreen({ navigation, route }) {
                         ref={descriptionInput}
                         style={styles.input}
                         placeholder="Enter recipe description"
+                        placeholderTextColor="#9c8e8b"
                         value={description}
                         onChangeText={setDescription}
                         onFocus={() => handleInputFocus(descriptionInput.current)}
@@ -252,6 +254,7 @@ export default function AddRecipeScreen({ navigation, route }) {
                         ref={instructionsInput}
                         style={styles.input}
                         placeholder="Enter preparation instructions"
+                        placeholderTextColor="#9c8e8b"
                         value={instructions}
                         onChangeText={setInstructions}
                         onFocus={() => handleInputFocus(instructionsInput.current)}
@@ -393,6 +396,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         borderWidth: 2,
         borderColor: '#691c0b',
+        color: '#691c0b',
     },
     button: {
         backgroundColor: '#691c0b',
