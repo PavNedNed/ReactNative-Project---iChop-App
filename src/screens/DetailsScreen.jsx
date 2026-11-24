@@ -1,4 +1,15 @@
-import { StyleSheet, View, ScrollView, Image, Text, Alert } from "react-native";
+
+import { useState } from "react";
+
+import {
+    StyleSheet,
+    View,
+    ScrollView,
+    Image,
+    Text,
+    Alert
+} from "react-native";
+
 import Button from "../components/Button";
 
 import { Host, HorizontalDivider } from "@expo/ui/jetpack-compose";
@@ -18,7 +29,7 @@ export default function DetailsScreen({
     const vegan = item.types?.vegan;
 
     // Supabase hook for recipes (for deletion)
-    const { remove, loading: recipeLoading } = useSupabaseTable('recipes');
+    const { remove } = useSupabaseTable('recipes');
 
     // Supabase hook for likes table
     const {
@@ -30,6 +41,9 @@ export default function DetailsScreen({
 
     const { user, isAuthenticated, refreshRecipes } = useUserContext();
 
+    // Loading state ONLY for deleting a recipe
+    const [isDeleting, setIsDeleting] = useState(false);
+
     // 1. Check if the current user is the owner of this recipe
     const isOwner = isAuthenticated && user?.id === item.user_id;
 
@@ -37,19 +51,26 @@ export default function DetailsScreen({
     const userLike = likesData.find(
         like => like.recipe_id === item.id && like.user_id === user?.id
     );
+
     const isLiked = !!userLike;
 
     // Calculate total likes for this recipe from the fetched table data
-    const totalLikes = likesData.filter(like => like.recipe_id === item.id).length;
+    const totalLikes = likesData.filter(
+        like => like.recipe_id === item.id
+    ).length;
 
     const handleToggleLike = async () => {
         if (!isAuthenticated) {
-            Alert.alert('Authentication required', 'You must be logged in to like recipes.');
+            Alert.alert(
+                'Authentication required',
+                'You must be logged in to like recipes.'
+            );
             return;
         }
 
         if (isLiked) {
             const success = await removeLike('id', userLike.id);
+
             if (success) {
                 Toast.show({
                     type: 'success',
@@ -62,6 +83,7 @@ export default function DetailsScreen({
                 recipe_id: item.id,
                 user_id: user.id
             });
+
             if (result) {
                 Toast.show({
                     type: 'success',
@@ -85,17 +107,26 @@ export default function DetailsScreen({
                     text: 'Delete',
                     style: 'destructive',
                     onPress: async () => {
-                        const success = await remove('id', item.id);
+                        setIsDeleting(true);
 
-                        if (success) {
-                            Toast.show({
-                                type: 'success',
-                                text1: 'Recipe deleted successfully!',
-                                topOffset: 80,
-                            });
+                        try {
+                            const success = await remove('id', item.id);
 
-                            refreshRecipes();
-                            navigation.goBack();
+                            if (success) {
+                                Toast.show({
+                                    type: 'success',
+                                    text1: 'Recipe deleted successfully!',
+                                    topOffset: 80,
+                                });
+
+                                refreshRecipes();
+                                navigation.goBack();
+                            } else {
+                                setIsDeleting(false);
+                            }
+                        } catch (error) {
+                            setIsDeleting(false);
+                            console.error('Error deleting recipe:', error);
                         }
                     },
                 },
@@ -105,6 +136,8 @@ export default function DetailsScreen({
     };
 
     const handleEdit = () => {
+        if (isDeleting) return;
+
         navigation.navigate('Edit Recipe', { recipe: item });
     };
 
@@ -137,11 +170,17 @@ export default function DetailsScreen({
                     <Text style={styles.instructions}>Instructions:</Text>
                     <Text style={styles.description}>{item.instructions}</Text>
 
+                    {glutenFree && (
+                        <Text style={styles.dietaryLabel}>✓ Gluten Free</Text>
+                    )}
 
-                    {glutenFree && <Text style={styles.dietaryLabel}>✓ Gluten Free</Text>}
-                    {dairyFree && <Text style={styles.dietaryLabel}>✓ Dairy Free</Text>}
-                    {vegan && <Text style={styles.dietaryLabel}>✓ Vegan</Text>}
+                    {dairyFree && (
+                        <Text style={styles.dietaryLabel}>✓ Dairy Free</Text>
+                    )}
 
+                    {vegan && (
+                        <Text style={styles.dietaryLabel}>✓ Vegan</Text>
+                    )}
 
                     <Host>
                         <HorizontalDivider
@@ -149,14 +188,22 @@ export default function DetailsScreen({
                             color="#e9e7e7"
                         />
                     </Host>
+
                     <View style={styles.levelSection}>
                         <Text style={styles.levelTextLabel}>
                             Difficulty of preparation:
                         </Text>
-                        <Text style={[styles.levelNumberLabel, { color: getLevelColor(item.level) }]}>
+
+                        <Text
+                            style={[
+                                styles.levelNumberLabel,
+                                { color: getLevelColor(item.level) }
+                            ]}
+                        >
                             {item.level}/10
                         </Text>
                     </View>
+
                     <Host>
                         <HorizontalDivider
                             thickness={5}
@@ -165,12 +212,18 @@ export default function DetailsScreen({
                         />
                     </Host>
 
-                    <Text style={styles.description}>Created by: {item.author_email}</Text>
-                    <Text style={styles.likes}>❤️ Likes: {totalLikes}</Text>
+                    <Text style={styles.description}>
+                        Created by: {item.author_email}
+                    </Text>
+
+                    <Text style={styles.likes}>
+                        ❤️ Likes: {totalLikes}
+                    </Text>
                 </View>
             </ScrollView>
 
             <View style={styles.footer}>
+
                 {/* 2. Show Like button ONLY if logged in AND NOT the owner */}
                 {isAuthenticated && !isOwner && (
                     <View style={[styles.footerButtons, { paddingBottom: 16 }]}>
@@ -191,13 +244,21 @@ export default function DetailsScreen({
                             title="Edit"
                             style={styles.editButton}
                             onPress={handleEdit}
+                            disabled={isDeleting}
                         />
+
                         <Button
                             onPress={handleDelete}
-                            title={recipeLoading ? "Deleting..." : "Delete"}
+                            title={isDeleting ? "Deleting..." : "Delete"}
                             variant="secondary"
-                            style={[styles.viewDeleteButton, { borderColor: 'red', borderWidth: 1 }]}
-                            disabled={recipeLoading}
+                            style={[
+                                styles.viewDeleteButton,
+                                {
+                                    borderColor: 'red',
+                                    borderWidth: 1
+                                }
+                            ]}
+                            disabled={isDeleting}
                         />
                     </View>
                 )}
@@ -214,10 +275,12 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         fontWeight: '600',
     },
+
     container: {
         flex: 1,
         backgroundColor: '#fff',
     },
+
     imageContainer: {
         width: '100%',
         aspectRatio: 1,
@@ -229,60 +292,72 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
+
     content: {
         padding: 20,
     },
+
     name: {
         fontSize: 24,
         fontWeight: 'bold',
         color: '#333',
         marginBottom: 8,
     },
+
     description: {
         fontSize: 15,
         color: '#666',
         lineHeight: 22,
         marginBottom: 8,
     },
+
     likes: {
         fontSize: 16,
         color: '#691c0b',
         fontWeight: '600',
         marginTop: 8,
     },
+
     footer: {
         padding: 16,
         backgroundColor: '#fff',
         borderTopWidth: 1,
         borderTopColor: '#e0e0e0',
     },
+
     footerButtons: {
         flexDirection: 'row',
         gap: 12,
     },
+
     editButton: {
         flex: 2,
     },
+
     viewDeleteButton: {
         flex: 1,
     },
+
     dietaryLabel: {
         fontSize: 20,
         fontWeight: 'bold',
         color: '#1e8327',
         marginBottom: 8,
     },
+
     levelTextLabel: {
         fontSize: 20,
         fontWeight: 'bold',
         color: '#6b6b6b',
     },
+
     levelNumberLabel: {
         fontSize: 40,
         fontWeight: 'bold',
         color: '#FF3B30',
         paddingLeft: 8,
     },
+
     levelSection: {
         flexDirection: 'row',
         justifyContent: 'center',
