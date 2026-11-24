@@ -130,10 +130,12 @@ export default function LoginScreen({ navigation, route }) {
                     )}
 
                     {/* Email */}
+                    <Text style={styles.inputLabel}>Email</Text>
                     <TextInput
                         ref={emailInput}
                         style={styles.input}
-                        placeholder="Email"
+                        placeholder="Write your email"
+                        placeholderTextColor="#9c8e8b"
                         value={email}
                         onChangeText={(value) => {
                             setEmail(value);
@@ -146,10 +148,12 @@ export default function LoginScreen({ navigation, route }) {
                     />
 
                     {/* Password */}
+                    <Text style={styles.inputLabel}>Password</Text>
                     <TextInput
                         ref={passwordInput}
                         style={styles.input}
-                        placeholder="Password"
+                        placeholder="Write your password"
+                        placeholderTextColor="#9c8e8b"
                         value={password}
                         onChangeText={(value) => {
                             setPassword(value);
@@ -214,6 +218,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         borderWidth: 2,
         borderColor: '#691c0b',
+        color: '#691c0b',
     },
     button: {
         backgroundColor: '#691c0b',
@@ -251,5 +256,12 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 200,
         marginBottom: 10,
+    },
+    inputLabel: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#691c0b',
+        marginBottom: 6,
+        marginLeft: 4,
     },
 });

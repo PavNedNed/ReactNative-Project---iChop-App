@@ -161,10 +161,12 @@ export default function RegisterScreen({ navigation }) {
                     )}
 
                     {/* Name */}
+                    <Text style={styles.inputLabel}>Name</Text>
                     <TextInput
                         ref={nameInput}
                         style={styles.input}
-                        placeholder="Name"
+                        placeholder="Write your name"
+                        placeholderTextColor="#9c8e8b"
                         value={name}
                         onChangeText={(value) => {
                             setName(value);
@@ -175,10 +177,12 @@ export default function RegisterScreen({ navigation }) {
                     />
 
                     {/* Email */}
+                    <Text style={styles.inputLabel}>Email</Text>
                     <TextInput
                         ref={emailInput}
                         style={styles.input}
-                        placeholder="Email"
+                        placeholder="Write your email"
+                        placeholderTextColor="#9c8e8b"
                         value={email}
                         onChangeText={(value) => {
                             setEmail(value);
@@ -191,10 +195,12 @@ export default function RegisterScreen({ navigation }) {
                     />
 
                     {/* Password */}
+                    <Text style={styles.inputLabel}>Password</Text>
                     <TextInput
                         ref={passwordInput}
                         style={styles.input}
-                        placeholder="Password"
+                        placeholder="Write your password"
+                        placeholderTextColor="#9c8e8b"
                         value={password}
                         onChangeText={(value) => {
                             setPassword(value);
@@ -205,10 +211,12 @@ export default function RegisterScreen({ navigation }) {
                     />
 
                     {/* Confirm Password */}
+                    <Text style={styles.inputLabel}>Confirm Password</Text>
                     <TextInput
                         ref={confirmPasswordInput}
                         style={styles.input}
-                        placeholder="Confirm Password"
+                        placeholder="Confirm your password"
+                        placeholderTextColor="#9c8e8b"
                         value={confirmPassword}
                         onChangeText={setConfirmPassword}
                         onFocus={() => handleInputFocus(confirmPasswordInput.current)}
@@ -264,6 +272,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         borderWidth: 2,
         borderColor: '#691c0b',
+        color: '#691c0b',
     },
     button: {
         backgroundColor: '#691c0b',
@@ -301,5 +310,12 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 200,
         marginBottom: 0,
+    },
+    inputLabel: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#691c0b',
+        marginBottom: 6,
+        marginLeft: 4,
     },
 });
