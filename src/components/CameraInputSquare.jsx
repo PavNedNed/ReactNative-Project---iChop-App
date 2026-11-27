@@ -469,7 +469,6 @@ export default function ImagePickerBox({
             <CameraView
               ref={cameraRef}
               style={styles.cameraPreview}
-              enableTorch={true}
               facing="back"
               mode="picture"
               mute
