@@ -78,9 +78,33 @@ export default function RegisterScreen({ navigation }) {
     };
 
     const registerHandler = async () => {
+
+        const validateEmail = (email) => {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        };
+
         // Validation
-        if (!name.trim() || !email.trim() || !password || !confirmPassword) {
-            return Alert.alert('Error', 'Please fill in all fields.');
+        if (!name.trim()) {
+            return Alert.alert('Error', 'Name is required.');
+        }      
+        
+        if (!email.trim()) {
+            return Alert.alert('Error', 'Email is required.');
+        } else if (!validateEmail(email)) {
+            return Alert.alert(
+                'Error',
+                'Please enter a valid email address.'
+            );
+        } else {
+            console.log('Email is valid:', email);
+        }
+
+        if (!password) {
+            return Alert.alert('Error', 'Password is required.');
+        }
+        if (!confirmPassword) {
+            return Alert.alert('Error', 'Confirm Password is required.');
         }
 
         if (password !== confirmPassword) {
@@ -92,22 +116,6 @@ export default function RegisterScreen({ navigation }) {
                 'Error',
                 'Password must be at least 6 characters long.'
             );
-        }
-
-        const validateEmail = (email) => {
-            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return regex.test(email);
-        };
-
-        if (!email) {
-            return Alert.alert('Error', 'Email is required.');
-        } else if (!validateEmail(email)) {
-            return Alert.alert(
-                'Error',
-                'Please enter a valid email address.'
-            );
-        } else {
-            console.log('Email is valid:', email);
         }
 
         // Register user
