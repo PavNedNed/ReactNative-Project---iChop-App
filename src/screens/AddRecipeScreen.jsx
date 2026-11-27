@@ -15,6 +15,8 @@ import {
     Alert
 } from 'react-native';
 
+import { useIsFocused } from '@react-navigation/native';
+
 import { useUserContext } from '../contexts/user/UserContext';
 import Slider from '@react-native-community/slider';
 import { Checkbox } from 'expo-checkbox';
@@ -36,6 +38,8 @@ export default function AddRecipeScreen({ navigation, route }) {
     const [vegan, setVegan] = useState(false);
 
     const { user, refreshRecipes } = useUserContext();
+
+    const isScreenFocused = useIsFocused();
 
     const {
         create,
@@ -219,6 +223,7 @@ export default function AddRecipeScreen({ navigation, route }) {
                         onImageChange={handleImageChange}
                         onUploadSuccess={handleUploadSuccess}
                         onPendingChange={handlePendingChange}
+                        isScreenFocused={isScreenFocused}
                     />
 
                     <Text style={styles.inputLabel}>Title</Text>

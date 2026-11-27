@@ -71,6 +71,7 @@ export default function ImagePickerBox({
   onImageChange,
   onUploadSuccess,
   onPendingChange,
+  isScreenFocused = true,
 }) {
   const normalizedInitial = initialImageUrl || '';
 
@@ -229,6 +230,13 @@ export default function ImagePickerBox({
     setCameraReady(false);
     setPreviewHidden(false);
   };
+
+  // Zatvaryane na kamerata, ako ekranat ne e fokusiran ili polzvatelqt se premesti na drug ekran
+  useEffect(() => {
+      if (!isScreenFocused && cameraOpen) {
+          closeCamera();
+      }
+  }, [isScreenFocused]);
 
   // Funkciya za natiskane na butona za otvaryane na kamerata
   const handlePressCamera = async () => {
